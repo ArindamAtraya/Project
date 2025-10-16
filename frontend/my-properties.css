@@ -1,0 +1,237 @@
+/* Sidebar Nav */
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: #374151;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: background 0.2s;
+  }
+  .nav-link:hover {
+    background: #f3f4f6;
+  }
+  .nav-link.active {
+    background: #e0f2fe;
+    color: #0369a1;
+    font-weight: 600;
+  }
+  .nav-link.logout {
+    color: #dc2626;
+  }
+  .nav-link.logout:hover {
+    background: #fee2e2;
+  }
+  
+  /* Property Card */
+  .property-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s;
+  }
+  .property-card:hover {
+    transform: translateY(-3px);
+  }
+  
+  .property-img-container {
+    position: relative;
+    overflow: hidden;
+  }
+  .property-img-container img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  /* Badges */
+  .badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: #2563eb;
+    color: #fff;
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+  .price-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: #1d4ed8;
+    color: #fff;
+    font-size: 0.85rem;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+  
+  /* Card Body */
+  .property-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .property-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+  }
+  .property-location {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-top: 4px;
+  }
+  .property-meta {
+    font-size: 0.85rem;
+    color: #4b5563;
+    margin-top: 6px;
+  }
+  .amenities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .amenity {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    background: #f3f4f6;
+    border-radius: 12px;
+    color: #374151;
+  }
+  
+  /* Card Actions */
+  .card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+  }
+  .card-actions button {
+    flex: 1;
+    padding: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+  .card-actions .edit-btn {
+    background: #f59e0b;
+    color: #fff;
+  }
+  .card-actions .edit-btn:hover {
+    background: #d97706;
+  }
+  .card-actions .delete-btn {
+    background: #ef4444;
+    color: #fff;
+  }
+  .card-actions .delete-btn:hover {
+    background: #b91c1c;
+  }
+  
+  /* ===== Edit Modal ===== */
+#editModal .bg-white {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 700px;
+    width: 100%;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+  
+  #editModal h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 16px;
+  }
+  
+  /* Form fields */
+  #editModal label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: #374151;
+  }
+  
+  #editModal input[type="text"],
+  #editModal input[type="number"],
+  #editModal select,
+  #editModal textarea {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.95rem;
+    color: #111827;
+    outline: none;
+    transition: border 0.2s;
+  }
+  
+  #editModal input:focus,
+  #editModal select:focus,
+  #editModal textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37,99,235,0.2);
+  }
+  
+  /* Checkboxes (amenities) */
+  #editModal .checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 6px;
+  }
+  
+  #editModal .checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    background: #f9fafb;
+    padding: 6px 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  #editModal .checkbox-group input {
+    accent-color: #2563eb;
+  }
+  
+  #editModal .checkbox-group label:hover {
+    background: #f3f4f6;
+  }
+  
+  /* File input */
+  #editModal input[type="file"] {
+    margin-top: 6px;
+    font-size: 0.9rem;
+  }
+  
+  /* Save Button */
+  #editModal button[type="submit"] {
+    background: #2563eb;
+    color: #fff;
+    font-weight: 500;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    margin-top: 12px;
+    width: 100%;
+    transition: background 0.2s;
+  }
+  #editModal button[type="submit"]:hover {
+    background: #1d4ed8;
+  }
+  

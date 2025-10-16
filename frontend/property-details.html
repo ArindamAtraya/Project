@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Property Details | RentEase</title>
+  <link rel="stylesheet" href="style.css" />
+  <!--<link rel="stylesheet" href="dummy.css" />-->
+  <link rel="stylesheet" href="property-details-new.css">
+  <!--<link rel="stylesheet" href="dummy.css" />-->
+  <!--<link rel="stylesheet" href="property-details.css" />-->
+  <!--<script src="property-details.js"></script>-->
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar (same as in home.html) -->
+    <aside class="sidebar">
+      <div class="logo">
+        <img src="logo.png" alt="RentEase Logo" class="logo-img">
+        <div>
+          <h3 class="brand-name">RentEase</h3>
+          <p class="brand-tagline">Find Your Perfect Home</p>
+        </div>
+      </div>
+      <nav class="nav">
+        <!-- Navigation will be dynamically inserted here -->
+      </nav>
+      <div class="stats">
+        <p class="stats-title">Quick Stats</p>
+        <p><span class="icon">📍</span> Active Cities <span class="highlight blue">25+</span></p>
+        <p><span class="icon">🏢</span> Listed Properties <span class="highlight green">1000+</span></p>
+      </div>
+      <div class="welcome">
+        <div class="avatar"></div>
+        <div>
+          <p class="welcome-title" id="welcome-username"></p>
+          <p class="welcome-sub"></p>
+        </div>
+      </div>
+    </aside>
+    
+
+    <!-- Main Content -->
+    <!--<main class="main">
+      <section class="hero">
+        <h1>Property Details</h1>
+      </section>
+
+      <section class="properties">
+        <div id="property-details" class="cards">-->
+          <!-- Property details will be injected here -->
+       <!-- </div>
+      </section>
+    </main>
+  </div>
+
+</div> --><!-- End of container -->
+<!-- Main Content (Adjusted Layout) -->
+<main class="main">
+  <!-- Top Row: Image Box (Middle) and Details Box (Right) -->
+  <div class="top-row">
+    <!-- Image Box (Top Middle - Horizontal Scrollable Box) -->
+    <div class="image-box">
+      <div class="gallery-container">
+        <div class="scrollable-gallery" id="image-gallery">
+          <!-- Images will be dynamically added here -->
+        </div>
+      </div>
+    </div>
+    <!-- Details Box (Right - Price, Furnished, Availability, Call, WhatsApp) -->
+    <div class="details-box">
+      <div class="price-section">
+        <h2 id="property-price"></h2>
+        <p id="property-deposit"></p>
+      </div>
+      <div class="status-section">
+        <span class="status-badge" id="property-furnishing"></span>
+        <span class="status-badge available" id="property-availability"></span>
+      </div>
+      <div class="contact-section">
+        <button class="contact-btn call-btn" id="call-btn"></button>
+        <button class="contact-btn whatsapp-btn" id="whatsapp-btn"></button>
+      </div>
+    </div>
+  </div>
+  <!-- Below: PG Name and Other Details Box -->
+  <!-- PG Details Box (like your second photo) -->
+<div class="pg-details-box">
+  <div class="pg-header">
+    <h1 id="property-title">Comfortable PG in Koramangala</h1>
+    <span class="verified-badge">✅ Verified</span>
+  </div>
+
+  <div class="location-info">
+    <div class="location-item">
+      <span class="icon">📍</span>
+      <p id="property-location">5th Block, Koramangala, Near Forum Mall</p>
+    </div>
+  </div>
+
+  <div class="details-grid">
+    <div class="detail-item">
+      <span class="icon">🛏</span>
+      <div>
+        <p class="detail-value" id="bedrooms">1</p>
+        <p class="detail-label">Rooms</p>
+      </div>
+    </div>
+    <div class="detail-item">
+      <span class="icon">🛁</span>
+      <div>
+        <p class="detail-value" id="bathrooms">5</p>
+        <p class="detail-label">Bathroom</p>
+      </div>
+    </div>
+    <div class="detail-item">
+      <span class="icon">📐</span>
+      <div>
+        <p class="detail-value" id="area">200</p>
+        <p class="detail-label">Sq Ft</p>
+      </div>
+    </div>
+    <div class="detail-item">
+      <span class="icon">👩</span>
+      <div>
+        <p class="detail-value" id="gender">Female</p>
+        <p class="detail-label">Gender</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="description-section">
+    <h3>Description</h3>
+    <p id="property-description">
+      Well-maintained PG with all modern amenities. Located in the heart of Koramangala with easy access to IT companies and metro stations. Clean rooms, homely food, and friendly environment.
+    </p>
+  </div>
+
+  <div class="amenities-section">
+    <h3>Amenities & Features</h3>
+    <div class="amenities-grid">
+      <div class="amenity-badge"><span class="icon">📶</span> WiFi Available</div>
+      <div class="amenity-badge"><span class="icon">🚗</span> Parking Space</div>
+      <div class="amenity-badge"><span class="icon">🛡️</span> 24/7 Security</div>
+      <div class="amenity-badge"><span class="icon">🍽️</span> Food Included</div>
+      <div class="amenity-badge"><span class="icon">❄️</span> Air Conditioning</div>
+      <div class="amenity-badge"><span class="icon">🧺</span> Laundry Service</div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+<script src="property-details-new.js"></script> <!-- New JS file -->
+
+<script>
+  // This is the dynamic navigation code
+  document.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem("token");
+    const userName = localStorage.getItem("userName");
+
+    const navHtml = `
+      <p class="nav-title">Navigation</p>
+      <ul>
+        <li><a href="home.html"><span class="icon">🔍</span> Search Properties</a></li>
+        <li><a href="add-property.html"><span class="icon">➕</span> Add Property</a></li>
+        <li><a href="#"><span class="icon">📋</span> My Properties</a></li>
+        <li><a href="signup.html" id="signup-link"><span class="icon">📝</span> Sign Up</a></li>
+        <li><a href="login.html" id="login-link"><span class="icon">🔑</span> Login</a></li>
+      </ul>
+    `;
+
+    const navContainer = document.querySelector(".nav");
+    if(navContainer) {
+      navContainer.innerHTML = navHtml;
+
+      const loginLink = document.getElementById("login-link");
+      const signupLink = document.getElementById("signup-link");
+
+      if (token && userName) {
+        if (loginLink) loginLink.style.display = "none";
+        if (signupLink) signupLink.style.display = "none";
+
+        const logoutItem = document.createElement("li");
+        const logoutBtn = document.createElement("a");
+        logoutBtn.href = "#";
+        logoutBtn.textContent = "🚪 Logout";
+        logoutBtn.style.color = "red";
+
+        logoutBtn.addEventListener("click", () => {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userName");
+          window.location.href = "login.html";
+        });
+
+        logoutItem.appendChild(logoutBtn);
+        loginLink?.parentElement.appendChild(logoutItem);
+
+        const welcome = document.getElementById("welcome-username");
+        if (welcome) {
+          welcome.textContent = `👋 ${userName}`;
+        }
+      }
+    }
+  });
+</script>
+
+
+</body>
+</html>

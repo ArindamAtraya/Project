@@ -1,0 +1,415 @@
+/* style.css */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f8fafc;
+    color: #333;
+  }
+  
+  .container {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    min-height: 100vh;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    background: #fff;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 30px;
+  }
+  
+  .logo-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #eef4ff;
+  }
+  
+  .brand-name {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .brand-tagline {
+    font-size: 12px;
+    color: #2563eb;
+    margin: 0;
+  }
+  
+  .nav-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 8px;
+  }
+  
+  nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px;
+  }
+  
+  nav ul li {
+    margin: 8px 0;
+  }
+  
+  nav ul li a {
+    text-decoration: none;
+    color: #333;
+    padding: 10px 12px;
+    display: block;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  
+  nav ul li a:hover,
+  nav ul li a.active {
+    background: #eef4ff;
+    color: #2563eb;
+    font-weight: 500;
+  }
+  
+  .stats-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #666;
+    margin: 20px 0 10px;
+  }
+  
+  .stats p {
+    /*margin: 6px 0;*/
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .highlight.blue {
+    color: #2563eb;
+    font-weight: bold;
+  }
+  
+  .highlight.green {
+    color: #16a34a;
+    font-weight: bold;
+  }
+  
+  /*.welcome {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #eef4ff;
+    padding: 12px;
+    border-radius: 10px;
+  }
+  
+  .avatar {
+    background: #dbeafe;
+    padding: 8px;
+    border-radius: 50%;
+    font-size: 18px;
+  }*/
+  
+  .welcome-title {
+    /*margin: 0;
+    font-size: 14px;*/
+    font-weight: bold;
+  }
+  
+  .welcome-sub {
+    margin: 0;
+    font-size: 12px;
+    color: #2563eb;
+  }
+  
+  /* Main */
+  .main {
+    padding: 20px;
+  }
+  
+  .hero {
+    background: linear-gradient(to right, #2563eb, #4f46e5);
+    color: white;
+    padding: 30px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .search-box {
+    display: flex;
+    margin-top: 15px;
+  }
+  
+  .search-box input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 6px 0 0 6px;
+  }
+  
+  .search-box button {
+    background: #0077ff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 0 6px 6px 0;
+    cursor: pointer;
+  }
+  
+  /* Property Cards */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+  
+  .property-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s;
+  }
+  
+  .property-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .card-img {
+    position: relative;
+  }
+  
+  .card-img img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+  
+  .property-type {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #eef4ff;
+    color: #2563eb;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 20px;
+  }
+  
+  .price-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ddd;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: bold;
+  }
+  
+  .price-badge.verified {
+    background: #16a34a;
+    color: white;
+  }
+  
+  .card-body {
+    padding: 15px;
+  }
+  
+  .card-body h3 {
+    margin: 0 0 5px;
+    font-size: 16px;
+  }
+  
+  .card-body .location {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+  }
+  
+  .details {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+  
+  .details .furnishing {
+    background: #d1fae5;
+    color: #065f46;
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-size: 12px;
+  }
+  
+  .amenities {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  
+  .amenities span {
+    background: #f1f5f9;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #444;
+  }
+  
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .btn {
+    border: none;
+    cursor: pointer;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .btn.view {
+    background: #2563eb;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .btn.call {
+    background: transparent;
+    border: 2px solid #2563eb;
+    color: #2563eb;
+    padding: 8px 10px;
+  }
+  
+  /* Modals */
+  .modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .modal[aria-hidden="false"] {
+    display: flex;
+  }
+  
+  /* --- Updated Search Modal Styles --- */
+  .modal-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    position: relative;
+    text-align: center;
+  }
+  
+  .modal-content h2 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #333;
+    margin: 0 0 20px;
+  }
+  
+  .modal-content #searchForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .modal-content input,
+  .modal-content select {
+    width: 100%;
+    padding: 10px 0px;
+    border-radius: 8px;
+    border: 1px solid rgb(9, 7, 7);
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  
+  .modal-content input:focus,
+  .modal-content select:focus {
+    outline: none;
+    border-color: #000204;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+  }
+  
+  .btn-gradient {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background 0.2s ease;
+    width: 100%;
+  }
+  
+  .btn-gradient:hover {
+    background: #1d4ed8;
+  }
+  
+  .close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #555;
+  }
+  
+  .close:hover {
+    color: #000;
+  }
+
+  /* back button for signup form */
+  .back-button {
+    /* Positioning at the top-left */
+    position: absolute;
+    top: 20px;
+    left: 20px;
+
+    /* Styling */
+    color: rgb(243, 117, 7); /* White text color */
+    text-decoration: none; /* Remove underline from the link */
+    font-size: 16px;
+    font-weight: 500; /* A bit thicker than normal */
+    
+    /* You can use a font icon for the arrow, or just a character */
+    /* For a simple arrow, you can use '&larr; Back' in your HTML */
+}
+
+/* Optional: Add a subtle hover effect */
+.back-button:hover {
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}

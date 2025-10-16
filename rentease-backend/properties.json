@@ -1,0 +1,31 @@
+[
+    {
+      "id": "1",
+      "type": "PG",
+      "title": "Comfortable PG in Koramangala",
+      "location": "Koramangala, Bangalore",
+      "price": "₹12,000/month",
+      "verified": true,
+      "beds": 1,
+      "baths": 1,
+      "furnishing": "fully furnished",
+      "amenities": ["WiFi", "Parking", "Security", "Food", "+1 more"],
+      "img": "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80",
+      "link": "property-details.html"
+    },
+    {
+      "id": "2",
+      "type": "Apartment",
+      "title": "Spacious 2BHK Apartment in BTM Layout",
+      "location": "BTM Layout, Bangalore",
+      "price": "₹25,000/month",
+      "verified": true,
+      "beds": 2,
+      "baths": 2,
+      "furnishing": "semi furnished",
+      "amenities": ["WiFi", "Parking", "Security"],
+      "img": "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80",
+      "link": "property-details.html"
+    }
+  ]
+  

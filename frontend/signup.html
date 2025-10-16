@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up | RentEase</title>
+  <!--<link rel="stylesheet" href="style.css">-->
+  <link rel="stylesheet" href="test.css">
+  <script defer src="signup.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <!--<aside class="sidebar">
+      <h2 class="logo">RentEase</h2>
+      <nav>
+        <a href="search.html">Search Properties</a>
+        <a href="add.html">Add Property</a>
+        <a href="my-properties.html">My Properties</a>
+        <a href="signup.html" class="active">Sign Up</a>
+        <a href="login.html">Login</a>
+      </nav>
+    </aside>-->
+    <a href="home.html" class="back-button" onclick="history.back()">Back</a>
+    <!-- Main Content -->
+    <main class="content">
+      <div class="auth-container">
+        <div class="auth-card">
+          <h2>Create Account</h2>
+          <form id="signupForm">
+            <div class="form-group">
+              <label>Name</label>
+              <input type="text" id="signupName" placeholder="Enter your Name" required>
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" id="signupEmail" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" id="signupPassword" placeholder="Enter a password" required>
+            </div>
+            <div class="form-group">
+              <label>Confirm Password</label>
+              <input type="password" id="signupConfirmPassword" placeholder="Confirm Password" required>
+            </div>
+            <button type="submit" class="btn-primary">Sign Up</button>
+          </form>
+          <p class="auth-footer">
+            Already have an account? <a href="login.html">Login</a>
+          </p>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
