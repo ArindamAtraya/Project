@@ -1,10 +1,33 @@
-// forget-password.js
-document.getElementById("forgotForm").addEventListener("submit", async (e) => {
+// reset.js
+
+// Pre-fill email if it was stored from forgot password page
+window.addEventListener('DOMContentLoaded', () => {
+  const savedEmail = localStorage.getItem('resetEmail');
+  if (savedEmail) {
+    document.getElementById('resetEmail').value = savedEmail;
+  }
+});
+
+document.getElementById("resetForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const email = document.getElementById("forgotEmail").value.trim();
+  const email = document.getElementById("resetEmail").value.trim();
+  const otp = document.getElementById("resetOtp").value.trim();
+  const newPassword = document.getElementById("newPassword").value.trim();
   const submitBtn = e.target.querySelector('button[type="submit"]');
   const originalBtnText = submitBtn.textContent;
+
+  // Validate OTP length
+  if (otp.length !== 6) {
+    showMessage("❌ OTP must be 6 digits", "error");
+    return;
+  }
+
+  // Validate password strength
+  if (newPassword.length < 6) {
+    showMessage("❌ Password must be at least 6 characters long", "error");
+    return;
+  }
 
   // Remove any existing message
   const existingMessage = document.querySelector('.message');
@@ -14,31 +37,31 @@ document.getElementById("forgotForm").addEventListener("submit", async (e) => {
 
   // Disable button and show loading state
   submitBtn.disabled = true;
-  submitBtn.innerHTML = 'Sending... <span class="spinner"></span>';
+  submitBtn.innerHTML = 'Resetting... <span class="spinner"></span>';
 
   try {
-    const res = await fetch("http://localhost:4000/api/forgot-password", {
+    const res = await fetch("http://localhost:4000/api/reset-password", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ email, otp, newPassword }),
     });
 
     const data = await res.json();
 
     if (res.ok) {
       // Show success message
-      showMessage("✅ OTP sent to your email successfully!", "success");
+      showMessage("✅ Password reset successful! Redirecting to login...", "success");
       
-      // Store email for reset page
-      localStorage.setItem("resetEmail", email);
+      // Clear stored email
+      localStorage.removeItem('resetEmail');
       
       // Redirect after a short delay
       setTimeout(() => {
-        window.location.href = "reset-password.html";
-      }, 1500);
+        window.location.href = "login.html";
+      }, 2000);
     } else {
       // Show error message
-      showMessage("❌ " + (data.message || "Something went wrong"), "error");
+      showMessage("❌ " + (data.message || "Invalid OTP or email"), "error");
       
       // Re-enable button
       submitBtn.disabled = false;
@@ -46,7 +69,7 @@ document.getElementById("forgotForm").addEventListener("submit", async (e) => {
     }
   } catch (err) {
     // Show connection error
-    showMessage("⚠️ Unable to connect to server. Please ensure the backend is running.", "error");
+    showMessage("⚠️ Error connecting to server. Please ensure the backend is running.", "error");
     console.error(err);
     
     // Re-enable button
@@ -69,7 +92,7 @@ function showMessage(text, type) {
   messageDiv.textContent = text;
 
   // Insert before the form buttons
-  const form = document.getElementById('forgotForm');
+  const form = document.getElementById('resetForm');
   const submitBtn = form.querySelector('button[type="submit"]');
   form.insertBefore(messageDiv, submitBtn);
 }

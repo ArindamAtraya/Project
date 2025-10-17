@@ -5,44 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Properties | RentEase</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!--<link rel="stylesheet" href="my-properties.css" />-->
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
+<body class="bg-gray-100 flex">
 
-  <!-- Navbar -->
-  <header class="bg-blue-600 text-white p-4 flex justify-between items-center">
-    <h1 class="text-lg font-bold">RentEase</h1>
-    <nav>
-      <a href="home.html" class="px-3 hover:underline">Search Property</a>
-      <a href="add-property.html" class="px-3 hover:underline">Add Property</a>
-      <a href="my-properties.html" class="px-3 font-semibold underline">My Properties</a>
-      <li><a href="add-homestay.html" class="active"><span class="icon">🏡</span> Add Homestay</a></li>
+  <!-- Sidebar -->
+  <aside class="w-64 bg-white shadow-md min-h-screen p-6 hidden md:block">
+    <h1 class="text-2xl font-bold text-blue-600 mb-6">RentEase</h1>
+    <nav id="sidebar-nav" class="space-y-4">
+      <a href="home.html" class="block text-gray-700 hover:text-blue-600">🔍 Search Properties</a>
+      <a href="add-property.html" class="block text-gray-700 hover:text-blue-600">➕ Add Property</a>
+      <a href="my-properties.html" class="block text-blue-600 font-semibold">📋 My Properties</a>
+      <a href="add-homestay.html" class="block text-gray-700 hover:text-blue-600">🏡 Add Homestay</a>
+      <a id="auth-link" href="login.html" class="block text-gray-700 hover:text-blue-600">🔑 Login</a>
     </nav>
-  </header>
 
-  <!-- Page Container -->
-  <main class="flex-1 p-4 max-w-6xl mx-auto">
-    <h2 class="text-2xl font-bold text-gray-800 mb-4">📌 My Properties</h2>
+    <div class="mt-10 text-sm text-gray-500">
+      <p>📍 Active Cities: <span class="font-semibold">25+</span></p>
+      <p>🏘️ Listed Properties: <span class="font-semibold">1000+</span></p>
+    </div>
+  </aside>
 
-    <!-- Properties Grid -->
-    <div id="properties-container"
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- JS will inject cards here (with all images in a scrollable row) -->
+  <!-- Main Section -->
+  <main class="flex-1 p-6">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-3xl font-semibold text-gray-800 mb-6">📌 My Properties</h2>
+
+      <!-- Property Cards Container -->
+      <div id="properties-container"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- JS will inject cards here -->
+      </div>
     </div>
   </main>
 
+  <!-- 👋 Username Display (Bottom-Right Corner) -->
+  <div id="user-greeting" class="fixed bottom-4 right-4 bg-white shadow-md rounded-full px-4 py-2 text-gray-700 font-medium hidden">
+    👋 <span id="user-name-display"></span>
+  </div>
+
   <!-- Edit Modal -->
-  <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+  <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div class="bg-white rounded-lg shadow-lg w-full max-w-3xl p-6 relative overflow-y-auto max-h-[90vh]">
       <button id="closeModal" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">✖</button>
-      <h2 class="text-xl font-semibold mb-4">Edit Property</h2>
+      <h2 class="text-xl font-semibold mb-4 text-gray-800">Edit Property</h2>
 
       <form id="editForm" class="space-y-4">
-        <!-- Title -->
+
         <input type="text" name="title" placeholder="Property Title"
           class="w-full border p-2 rounded" required />
 
-        <!-- Type -->
         <select name="type" class="w-full border p-2 rounded" required>
           <option value="">Select Type</option>
           <option value="PG">PG</option>
@@ -53,28 +64,23 @@
           <option value="Other">Other</option>
         </select>
 
-        <!-- Location -->
         <input type="text" name="location" placeholder="Location"
           class="w-full border p-2 rounded" required />
 
-        <!-- Price & Deposit -->
         <div class="grid grid-cols-2 gap-4">
           <input type="number" name="price" placeholder="Price (₹)" class="border p-2 rounded" required />
           <input type="number" name="deposit" placeholder="Deposit (₹)" class="border p-2 rounded" />
         </div>
 
-        <!-- Description -->
         <textarea name="description" placeholder="Description"
           class="w-full border p-2 rounded"></textarea>
 
-        <!-- Beds, Baths, SqFt -->
         <div class="grid grid-cols-3 gap-4">
           <input type="number" name="beds" placeholder="Beds" class="border p-2 rounded" />
           <input type="number" name="baths" placeholder="Baths" class="border p-2 rounded" />
           <input type="text" name="sqFt" placeholder="SqFt" class="border p-2 rounded" />
         </div>
 
-        <!-- Gender & Furnishing -->
         <div class="grid grid-cols-2 gap-4">
           <select name="gender" class="border p-2 rounded">
             <option value="Any">Any</option>
@@ -90,19 +96,10 @@
           </select>
         </div>
 
-        <!-- Availability 
-        <select name="availability" class="w-full border p-2 rounded">
-          <option value="Available">Available</option>
-          <option value="Unavailable">Unavailable</option>
-        </select>-->
-
-        <!-- Contact -->
         <div class="grid grid-cols-2 gap-4">
           <input type="text" name="phone" placeholder="Phone" class="border p-2 rounded" />
-          <!--<input type="text" name="whatsapp" placeholder="WhatsApp" class="border p-2 rounded" />-->
         </div>
 
-        <!-- Amenities -->
         <div>
           <label class="font-semibold">Amenities:</label>
           <div class="grid grid-cols-2 gap-2 mt-2">
@@ -115,20 +112,53 @@
           </div>
         </div>
 
-        <!-- Images -->
         <label class="block">Update Images:</label>
         <input type="file" name="images" multiple class="w-full border p-2 rounded" />
         <div id="imagePreview" class="flex flex-wrap gap-2 mt-2"></div>
 
-        <!-- Submit -->
-        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
           Save Changes
         </button>
       </form>
     </div>
   </div>
 
-  <!-- Script -->
+  <!-- Scripts -->
+  <script>
+    // ✅ Protect My Properties page
+    const token = localStorage.getItem("token");
+    const userName = localStorage.getItem("userName");
+
+    if (!token) {
+      alert("⚠️ Please login to view your properties.");
+      window.location.href = "login.html";
+    } else {
+      const authLink = document.getElementById("auth-link");
+      if (authLink) {
+        authLink.style.display = "none";
+        const nav = document.getElementById("sidebar-nav");
+
+        // 👋 Show user greeting at bottom right instead of sidebar
+        const greetingDiv = document.getElementById("user-greeting");
+        const userNameDisplay = document.getElementById("user-name-display");
+        userNameDisplay.textContent = userName;
+        greetingDiv.classList.remove("hidden");
+
+        // Add logout link to sidebar
+        const logoutLink = document.createElement("a");
+        logoutLink.href = "#";
+        logoutLink.textContent = "🚪 Logout";
+        logoutLink.className = "block text-red-600 font-medium hover:text-red-800";
+        logoutLink.addEventListener("click", () => {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userName");
+          window.location.href = "login.html";
+        });
+        nav.appendChild(logoutLink);
+      }
+    }
+  </script>
+
   <script src="my-properties.js"></script>
 </body>
 </html>
