@@ -8,7 +8,7 @@ const router = express.Router();
 let otpStore = {};
 
 // ========================
-// 1. SIGNUP
+// 1. SIGNUP (legacy route, optional now)
 // ========================
 router.post("/signup", async (req, res) => {
   try {
@@ -76,7 +76,6 @@ router.post("/forgot-password", async (req, res) => {
 
     const otp = Math.floor(100000 + Math.random() * 900000);
     otpStore[email] = otp;
-
     console.log("✅ OTP generated:", otp);
 
     const transporter = nodemailer.createTransport({
@@ -102,7 +101,6 @@ router.post("/forgot-password", async (req, res) => {
   }
 });
 
-
 // ========================
 // 4. RESET PASSWORD
 // ========================
@@ -123,8 +121,6 @@ router.post("/reset-password", async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
-
-export default router;
 
 // ========================
 // 5. SEND SIGNUP OTP
@@ -170,11 +166,11 @@ router.post("/send-signup-otp", async (req, res) => {
 });
 
 // ========================
-// 6. VERIFY SIGNUP OTP
+// 6. VERIFY SIGNUP OTP AND CREATE USER
 // ========================
 router.post("/verify-signup-otp", async (req, res) => {
   try {
-    const { email, otp } = req.body;
+    const { name, email, password, otp } = req.body;
     console.log("🔍 Verifying signup OTP for:", email, "OTP:", otp);
 
     if (!otpStore[email])
@@ -185,9 +181,19 @@ router.post("/verify-signup-otp", async (req, res) => {
 
     delete otpStore[email];
 
-    res.json({ message: "OTP verified successfully" });
+    const existingUser = await User.findOne({ email });
+    if (existingUser)
+      return res.status(400).json({ message: "Email already registered" });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({ name, email, password: hashedPassword });
+    await newUser.save();
+
+    res.json({ message: "Signup successful! You can now login." });
   } catch (err) {
-    console.error("💥 Error verifying signup OTP:", err);
+    console.error("💥 Error verifying signup OTP and creating user:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
+
+export default router;

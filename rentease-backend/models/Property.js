@@ -5,7 +5,7 @@ const propertySchema = new mongoose.Schema(
   {
     type: { 
       type: String, 
-      enum: ["PG", "Flat", "Apartment", "Homestay", "Villa", "Other"], 
+      enum: ["1BHK", "2BHK", "3BHK", "Flat", "1RK", "Villa", "Homestay", "Other"], 
       required: true 
     }, // NEW field for category
 
