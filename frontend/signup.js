@@ -8,6 +8,7 @@ sendOtpBtn.addEventListener("click", async () => {
   const password = document.getElementById("signupPassword").value;
   const confirmPassword = document.getElementById("signupConfirmPassword").value;
 
+  // Validate inputs
   if (!name || !email || !password || !confirmPassword) {
     alert("⚠️ Please fill in all fields.");
     return;
@@ -32,6 +33,7 @@ sendOtpBtn.addEventListener("click", async () => {
 
     if (res.ok) {
       alert("✅ OTP sent to your email!");
+      // Show OTP input and signup button
       document.querySelector(".otp-group").style.display = "block";
       document.getElementById("signupBtn").style.display = "block";
       sendOtpBtn.style.display = "none";

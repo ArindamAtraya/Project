@@ -3,28 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Add Property - RentEase</title>
+  <title>Add Property - MyNest</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body class="bg-gray-100 flex relative">
 
-  <!-- Sidebar -->
-  <aside class="w-64 bg-white shadow-md min-h-screen p-6 hidden md:block">
-    <h1 class="text-2xl font-bold text-blue-600 mb-6">RentEase</h1>
-    <nav id="sidebar-nav" class="space-y-4">
-      <a href="home.html" class="block text-gray-700 hover:text-blue-600">🔍 Search Properties</a>
-      <a href="add-property.html" class="block text-blue-600 font-semibold">➕ Add Property</a>
-      <a href="my-properties.html" class="block text-gray-700 hover:text-blue-600">📋 My Properties</a>
-      <a href="add-homestay.html" class="block text-gray-700 hover:text-blue-600">🏡 Add Homestay</a>
-      <a id="auth-link" href="login.html" class="block text-gray-700 hover:text-blue-600">🔑 Login</a>
+  <!-- ✅ Sidebar (Replaced with MyNest version) -->
+  <aside class="sidebar">
+    <!-- Logo Section -->
+    <div class="logo">
+      <img src="logo.png" alt="RentEase Logo" class="logo-img">
+      <div>
+        <h3 class="brand-name">MyNest</h3>
+        <p class="brand-tagline">Find Your Perfect Home</p>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+      <p class="nav-title">Navigation</p>
+      <ul>
+        <li><a href="home.html"><span class="icon">🔍</span> Search Properties</a></li>
+        <li><a href="add-property.html" class="active"><span class="icon">➕</span> Add Property</a></li>
+        <li><a href="my-properties.html"><span class="icon">📋</span> My Properties</a></li>
+        <li><a href="add-homestay.html"><span class="icon">🏡</span> Add Homestay</a></li>
+        <li><a href="signup.html" id="signup-link"><span class="icon">📝</span> Sign Up</a></li>
+        <li><a href="login.html" id="login-link"><span class="icon">🔑</span> Login</a></li>
+      </ul>
     </nav>
-    <div class="mt-10 text-sm text-gray-500">
-      <p>📍 Active Cities: <span class="font-semibold">25+</span></p>
-      <p>🏘️ Listed Properties: <span class="font-semibold">1000+</span></p>
+
+    <!-- Quick Stats -->
+    <div class="stats">
+      <p class="stats-title">Quick Stats</p>
+      <p><span class="icon">📍</span> Active Cities <span class="highlight blue">25+</span></p>
+      <p><span class="icon">🏢</span> Listed Properties <span class="highlight green">1000+</span></p>
+    </div>
+
+    <!-- Welcome Box -->
+    <div class="welcome">
+      <div class="avatar"></div>
+      <div>
+        <!-- <p class="welcome-title" id="welcome-username"></p>
+        <p class="welcome-sub"></p> -->
+      </div>
     </div>
   </aside>
 
-  <!-- Main Container -->
+  <!-- ✅ Main Container (Unchanged) -->
   <main class="flex-1 max-w-4xl mx-auto mt-6 bg-white shadow-lg rounded-lg p-6">
     <h2 class="text-2xl font-semibold text-gray-800 mb-6">🏠 Add Your Property</h2>
 
@@ -92,7 +118,7 @@
         <div id="preview" class="mt-3 flex gap-2 flex-wrap"></div>
       </div>
 
-      <!-- ✅ Description & Contact -->
+      <!-- Description & Contact -->
       <div>
         <h3 class="text-lg font-semibold text-gray-700 mb-3">Description & Contact</h3>
         <textarea name="description" placeholder="Describe your property..." class="input w-full"></textarea>
@@ -105,12 +131,12 @@
     </form>
   </main>
 
-  <!-- ✅ Bottom-right greeting -->
+  <!-- ✅ Bottom-right greeting (unchanged) -->
   <div id="user-greeting" class="fixed bottom-4 right-6 bg-white shadow-md px-4 py-2 rounded-full text-gray-700 font-medium hidden">
     👋 <span id="userNameDisplay"></span>
   </div>
 
-  <!-- Scripts -->
+  <!-- Scripts (unchanged) -->
   <script>
     const style = document.createElement("style");
     style.innerHTML = `.input { border: 1px solid #ddd; padding: 10px; border-radius: 6px; width: 100%; }`;
@@ -140,27 +166,17 @@
       alert("⚠️ You must be logged in to add a property.");
       window.location.href = "login.html";
     } else {
-      const authLink = document.getElementById("auth-link");
+      const authLink = document.getElementById("login-link");
       if (authLink) authLink.style.display = "none";
 
-      // Show bottom-right greeting
       const greetingDiv = document.getElementById("user-greeting");
       const userNameDisplay = document.getElementById("userNameDisplay");
-      userNameDisplay.textContent = userName || "User";
-      greetingDiv.classList.remove("hidden");
+      const welcomeUser = document.getElementById("welcome-username");
 
-      // Add logout link in sidebar
-      const nav = document.getElementById("sidebar-nav");
-      const logoutLink = document.createElement("a");
-      logoutLink.href = "#";
-      logoutLink.textContent = "🚪 Logout";
-      logoutLink.className = "block text-red-600 font-medium hover:text-red-800";
-      logoutLink.addEventListener("click", () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userName");
-        window.location.href = "login.html";
-      });
-      nav.appendChild(logoutLink);
+      userNameDisplay.textContent = userName || "User";
+      if (welcomeUser) welcomeUser.textContent = `Welcome, ${userName || "User"} 👋`;
+
+      greetingDiv.classList.remove("hidden");
     }
   </script>
 

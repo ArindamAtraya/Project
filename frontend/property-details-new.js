@@ -32,6 +32,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         img.alt = property.title;
         gallery.appendChild(img);
       });
+      document.getElementById('scroll-left').addEventListener('click', () => {
+  document.getElementById('image-gallery').scrollBy({ left: -300, behavior: 'smooth' });
+});
+document.getElementById('scroll-right').addEventListener('click', () => {
+  document.getElementById('image-gallery').scrollBy({ left: 300, behavior: 'smooth' });
+});
+
 
       // Right Details Box
       document.getElementById("property-price").textContent = property.price || "";

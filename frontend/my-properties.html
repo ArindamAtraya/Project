@@ -3,29 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Properties | RentEase</title>
+  <title>My Properties | MyNest</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body class="bg-gray-100 flex">
 
-  <!-- Sidebar -->
-  <aside class="w-64 bg-white shadow-md min-h-screen p-6 hidden md:block">
-    <h1 class="text-2xl font-bold text-blue-600 mb-6">RentEase</h1>
-    <nav id="sidebar-nav" class="space-y-4">
-      <a href="home.html" class="block text-gray-700 hover:text-blue-600">🔍 Search Properties</a>
-      <a href="add-property.html" class="block text-gray-700 hover:text-blue-600">➕ Add Property</a>
-      <a href="my-properties.html" class="block text-blue-600 font-semibold">📋 My Properties</a>
-      <a href="add-homestay.html" class="block text-gray-700 hover:text-blue-600">🏡 Add Homestay</a>
-      <a id="auth-link" href="login.html" class="block text-gray-700 hover:text-blue-600">🔑 Login</a>
+  <!-- ✅ Sidebar (Replaced with MyNest version) -->
+  <aside class="sidebar">
+    <!-- Logo Section -->
+    <div class="logo">
+      <img src="logo.png" alt="MyNest Logo" class="logo-img">
+      <div>
+        <h3 class="brand-name">MyNest</h3>
+        <p class="brand-tagline">Find Your Perfect Home</p>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+      <p class="nav-title">Navigation</p>
+      <ul>
+        <li><a href="home.html"><span class="icon">🔍</span> Search Properties</a></li>
+        <li><a href="add-property.html"><span class="icon">➕</span> Add Property</a></li>
+        <li><a href="my-properties.html" class="active"><span class="icon">📋</span> My Properties</a></li>
+        <li><a href="add-homestay.html"><span class="icon">🏡</span> Add Homestay</a></li>
+        <li><a href="signup.html" id="signup-link"><span class="icon">📝</span> Sign Up</a></li>
+        <li><a href="login.html" id="login-link"><span class="icon">🔑</span> Login</a></li>
+      </ul>
     </nav>
 
-    <div class="mt-10 text-sm text-gray-500">
-      <p>📍 Active Cities: <span class="font-semibold">25+</span></p>
-      <p>🏘️ Listed Properties: <span class="font-semibold">1000+</span></p>
+    <!-- Quick Stats -->
+    <div class="stats">
+      <p class="stats-title">Quick Stats</p>
+      <p><span class="icon">📍</span> Active Cities <span class="highlight blue">25+</span></p>
+      <p><span class="icon">🏢</span> Listed Properties <span class="highlight green">1000+</span></p>
+    </div>
+
+    <!-- Welcome Box -->
+    <div class="welcome">
+      <div class="avatar"></div>
+      <div>
+        <!-- <p class="welcome-title" id="welcome-username"></p>
+        <p class="welcome-sub"></p> -->
+      </div>
     </div>
   </aside>
 
-  <!-- Main Section -->
+  <!-- ✅ Main Section (Unchanged) -->
   <main class="flex-1 p-6">
     <div class="max-w-7xl mx-auto">
       <h2 class="text-3xl font-semibold text-gray-800 mb-6">📌 My Properties</h2>
@@ -43,7 +68,7 @@
     👋 <span id="user-name-display"></span>
   </div>
 
-  <!-- Edit Modal -->
+  <!-- Edit Modal (Unchanged) -->
   <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div class="bg-white rounded-lg shadow-lg w-full max-w-3xl p-6 relative overflow-y-auto max-h-[90vh]">
       <button id="closeModal" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">✖</button>
@@ -123,9 +148,8 @@
     </div>
   </div>
 
-  <!-- Scripts -->
+  <!-- ✅ Scripts (Unchanged) -->
   <script>
-    // ✅ Protect My Properties page
     const token = localStorage.getItem("token");
     const userName = localStorage.getItem("userName");
 
@@ -133,29 +157,16 @@
       alert("⚠️ Please login to view your properties.");
       window.location.href = "login.html";
     } else {
-      const authLink = document.getElementById("auth-link");
-      if (authLink) {
-        authLink.style.display = "none";
-        const nav = document.getElementById("sidebar-nav");
+      const authLink = document.getElementById("login-link");
+      if (authLink) authLink.style.display = "none";
 
-        // 👋 Show user greeting at bottom right instead of sidebar
-        const greetingDiv = document.getElementById("user-greeting");
-        const userNameDisplay = document.getElementById("user-name-display");
-        userNameDisplay.textContent = userName;
-        greetingDiv.classList.remove("hidden");
+      const greetingDiv = document.getElementById("user-greeting");
+      const userNameDisplay = document.getElementById("user-name-display");
+      const welcomeUser = document.getElementById("welcome-username");
 
-        // Add logout link to sidebar
-        const logoutLink = document.createElement("a");
-        logoutLink.href = "#";
-        logoutLink.textContent = "🚪 Logout";
-        logoutLink.className = "block text-red-600 font-medium hover:text-red-800";
-        logoutLink.addEventListener("click", () => {
-          localStorage.removeItem("token");
-          localStorage.removeItem("userName");
-          window.location.href = "login.html";
-        });
-        nav.appendChild(logoutLink);
-      }
+      userNameDisplay.textContent = userName || "User";
+      if (welcomeUser) welcomeUser.textContent = `Welcome, ${userName || "User"} 👋`;
+      greetingDiv.classList.remove("hidden");
     }
   </script>
 
