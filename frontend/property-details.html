@@ -9,9 +9,13 @@
   <script src="property-details-new.js" defer></script>
 </head>
 <body>
+  <!-- Mobile Menu Toggle -->
+  <button class="menu-toggle" id="menuToggle">☰</button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
   <div class="container">
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
       <div class="logo">
         <img src="logo.png" alt="RentEase Logo" class="logo-img">
         <div>
@@ -71,7 +75,7 @@
       </div>
 
       <!-- PG Details Box -->
-      <div class="pg-details-box">
+     <div class="pg-details-box">
         <div class="pg-header">
           <h1 id="property-title">Comfortable PG in Koramangala</h1>
           <span class="verified-badge">✅ Verified</span>
@@ -84,7 +88,7 @@
           </div>
         </div>
 
-        <div class="details-grid">
+       <div class="details-grid">
           <div class="detail-item">
             <span class="icon">🛏</span>
             <div>
@@ -140,6 +144,23 @@
   <!-- Dynamic Navigation & Welcome Script -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
+      // Mobile menu functionality
+      const menuToggle = document.getElementById('menuToggle');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+      if (menuToggle && sidebar) {
+        menuToggle.addEventListener('click', function() {
+          sidebar.classList.toggle('active');
+          sidebarOverlay.classList.toggle('active');
+        });
+
+        sidebarOverlay.addEventListener('click', function() {
+          sidebar.classList.remove('active');
+          sidebarOverlay.classList.remove('active');
+        });
+      }
+
       const token = localStorage.getItem("token");
       const userName = localStorage.getItem("userName");
 
@@ -182,6 +203,28 @@
           if (welcome) welcome.textContent = `👋 ${userName}`;
         }
       }
+
+      // Close sidebar when clicking on nav links (mobile)
+      const navLinks = document.querySelectorAll('.nav a');
+      navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          if (window.innerWidth <= 768) {
+            sidebar.classList.remove('active');
+            sidebarOverlay.classList.remove('active');
+          }
+        });
+      });
+
+      // Handle window resize
+      function handleResize() {
+        if (window.innerWidth > 768) {
+          if (sidebar) sidebar.classList.remove('active');
+          if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+        }
+      }
+
+      window.addEventListener('resize', handleResize);
+      handleResize();
 
       // Scrollable gallery buttons
       const gallery = document.getElementById('image-gallery');

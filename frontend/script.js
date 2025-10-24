@@ -1,7 +1,99 @@
 // ==========================
-// Property Cards Rendering (Dynamic from API)
+// Mobile Menu Toggle
 // ==========================
-let allProperties = []; // store fetched properties for search
+document.addEventListener('DOMContentLoaded', function() {
+  const menuToggle = document.getElementById('menuToggle');
+  const sidebar = document.getElementById('sidebar');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+  if (menuToggle && sidebar) {
+    menuToggle.addEventListener('click', function() {
+      sidebar.classList.toggle('active');
+      sidebarOverlay.classList.toggle('active');
+    });
+
+    sidebarOverlay.addEventListener('click', function() {
+      sidebar.classList.remove('active');
+      sidebarOverlay.classList.remove('active');
+    });
+  }
+
+  const navLinks = document.querySelectorAll('.nav a');
+  navLinks.forEach(link => {
+    link.addEventListener('click', function() {
+      if (window.innerWidth <= 768) {
+        sidebar.classList.remove('active');
+        sidebarOverlay.classList.remove('active');
+      }
+    });
+  });
+
+  function handleResize() {
+    if (window.innerWidth > 768) {
+      if (sidebar) sidebar.classList.remove('active');
+      if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+    }
+  }
+
+  window.addEventListener('resize', handleResize);
+  handleResize();
+});
+
+// ==========================
+// AGGRESSIVE Equal Card Heights Function
+// ==========================
+function forceEqualCardHeights() {
+  const cards = document.querySelectorAll('.property-card');
+  if (cards.length === 0) return;
+  
+  console.log('Forcing equal card heights for', cards.length, 'cards');
+  
+  // FIRST: Remove any existing height styles
+  cards.forEach(card => {
+    card.style.height = '';
+    card.style.minHeight = '';
+  });
+  
+  // SECOND: Use CSS important through style attribute
+  let maxHeight = 0;
+  
+  // Find the maximum height
+  cards.forEach(card => {
+    const cardHeight = card.scrollHeight;
+    if (cardHeight > maxHeight) {
+      maxHeight = cardHeight;
+    }
+  });
+  
+  console.log('Max height found:', maxHeight);
+  
+  // THIRD: Apply the maximum height to ALL cards
+  cards.forEach(card => {
+    card.style.height = maxHeight + 'px';
+    card.style.minHeight = maxHeight + 'px';
+    card.style.overflow = 'hidden';
+  });
+  
+  // FOURTH: Double check after a delay
+  setTimeout(() => {
+    let finalMaxHeight = 0;
+    cards.forEach(card => {
+      const height = card.offsetHeight;
+      if (height > finalMaxHeight) finalMaxHeight = height;
+    });
+    
+    cards.forEach(card => {
+      card.style.height = finalMaxHeight + 'px';
+    });
+    
+    console.log('Final enforced height:', finalMaxHeight);
+  }, 100);
+}
+
+// ==========================
+// Property Cards Rendering
+// ==========================
+let allProperties = [];
 
 async function fetchProperties() {
   try {
@@ -9,23 +101,25 @@ async function fetchProperties() {
     const data = await res.json();
 
     if (data.properties) {
-      allProperties = data.properties; // save for search
+      allProperties = data.properties;
       renderProperties(allProperties);
+      initializeFilters(); // Initialize filters after loading properties
     } else {
       renderProperties([]);
+      initializeFilters();
     }
   } catch (err) {
     console.error("Error fetching properties:", err);
     renderProperties([]);
+    initializeFilters();
   }
 }
 
 const list = document.getElementById("property-list");
 const countHeading = document.getElementById("properties-count");
 
-// Function to render properties
 function renderProperties(data) {
-  list.innerHTML = ""; // clear old cards
+  list.innerHTML = "";
 
   if (!data.length) {
     countHeading.textContent = "No Properties Found";
@@ -36,27 +130,30 @@ function renderProperties(data) {
     const card = document.createElement("div");
     card.className = "property-card";
 
+    // STRICT content limiting for equal sizes
+    const title = p.title && p.title.length > 50 ? p.title.substring(0, 50) + '...' : p.title;
+    const amenities = p.amenities && p.amenities.length 
+      ? p.amenities.slice(0, 4).map(a => `<span>${a}</span>`).join("") // Only 4 amenities max
+      : "<span>No amenities</span>";
+
     card.innerHTML = `
       <div class="card-img">
-      <img src="${p.images && p.images.length > 0 ? p.images[0] : "https://via.placeholder.com/600x400"}" alt="${p.title}">
+        <img src="${p.images && p.images.length > 0 ? p.images[0] : "https://via.placeholder.com/600x400"}" alt="${title}">
         <span class="property-type">${p.type || "Property"}</span>
         <span class="price-badge ${p.verified ? "verified" : ""}">
           ${p.verified ? "✔ Verified " : ""}${p.price}
         </span>
       </div>
       <div class="card-body">
-        <h3>${p.title}</h3>
-        <p class="location">📍 ${p.location}</p>
+        <h3>${title}</h3>
+        <p class="location">📍 ${p.location || "Location not specified"}</p>
         <div class="details">
           <span>🛏 ${p.beds || "-"} Bed</span>
           <span>🛁 ${p.baths || "-"} Bath</span>
           <span class="furnishing">${p.furnishing || "N/A"}</span>
         </div>
         <div class="amenities">
-          ${p.amenities && p.amenities.length 
-            ? p.amenities.map(a => `<span>${a}</span>`).join("")
-            : "<span>No amenities listed</span>"
-          }
+          ${amenities}
         </div>
         <div class="actions">
           <button class="btn view" data-link="property-details.html" data-id="${p._id}">
@@ -70,32 +167,33 @@ function renderProperties(data) {
   });
 
   countHeading.textContent = `${data.length} Properties Found`;
+  
+  // AGGRESSIVE equal height enforcement
+  setTimeout(forceEqualCardHeights, 50);
+  setTimeout(forceEqualCardHeights, 200);
+  setTimeout(forceEqualCardHeights, 500);
 }
 
-// 🔥 Call fetch on page load
+// Initial fetch
 fetchProperties();
 
-
 // ==========================
-// Popup Search Modal (Fixed)
+// Search and Filter Functionality - UPDATED
 // ==========================
 const searchInput = document.getElementById("search-input");
 const searchModal = document.getElementById("searchModal");
 const searchBtn = document.getElementById("search-btn");
-const searchForm = document.getElementById("searchForm"); // matches your HTML form id
-const closeSearch = searchModal.querySelector(".close");
+const searchForm = document.getElementById("searchForm");
+const closeSearch = searchModal?.querySelector(".close");
 
-// Open modal when clicking search input or button
 if (searchInput) searchInput.addEventListener("click", () => searchModal.setAttribute("aria-hidden", "false"));
 if (searchBtn) searchBtn.addEventListener("click", () => searchModal.setAttribute("aria-hidden", "false"));
-
-// Close modal when clicking ×
 if (closeSearch) closeSearch.addEventListener("click", () => searchModal.setAttribute("aria-hidden", "true"));
 
-// Close modal when clicking outside modal content
-window.addEventListener("click", (e) => { if (e.target === searchModal) searchModal.setAttribute("aria-hidden", "true"); });
+window.addEventListener("click", (e) => { 
+  if (e.target === searchModal) searchModal.setAttribute("aria-hidden", "true"); 
+});
 
-// Handle form submit
 if (searchForm) {
   searchForm.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -106,7 +204,7 @@ if (searchForm) {
       const matchesText =
         (p.location && p.location.toLowerCase().includes(cityArea)) ||
         (p.title && p.title.toLowerCase().includes(cityArea));
-      const matchesType = propertyType ? (p.type && p.type.toLowerCase().includes(propertyType)) : true;
+      const matchesType = propertyType === "any" ? true : (p.type && p.type.toLowerCase().includes(propertyType));
       return matchesText && matchesType;
     });
 
@@ -115,20 +213,61 @@ if (searchForm) {
   });
 }
 
-// ==========================
-// Quick Filter Buttons under Search Bar
-// ==========================
-const filterButtons = document.querySelectorAll(".filter-option");
-filterButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    const selectedType = btn.getAttribute("data-type");
-    const filtered = allProperties.filter(p => p.type && p.type.toLowerCase() === selectedType.toLowerCase());
-    renderProperties(filtered);
+// Quick filters - FIXED VERSION (WITH WORKING HOMESTAY)
+function initializeFilters() {
+  const filterButtons = document.querySelectorAll(".filter-option");
+  
+  console.log("Total filter buttons:", filterButtons.length);
+  
+  filterButtons.forEach(btn => {
+    btn.addEventListener("click", function() {
+      // Remove active class from all buttons
+      filterButtons.forEach(b => b.classList.remove("active"));
+      // Add active class to clicked button
+      this.classList.add("active");
+      
+      const selectedType = this.getAttribute("data-type");
+      console.log("Filtering by type:", selectedType, "from button:", this.textContent);
+      
+      let filtered;
+      
+      if (selectedType === "pg") {
+        filtered = allProperties.filter(p => p.type && p.type.toLowerCase().includes("pg"));
+      } else if (selectedType === "apartment") {
+        filtered = allProperties.filter(p => p.type && (p.type.toLowerCase().includes("apartment") || p.type.toLowerCase().includes("rent")));
+      } else if (selectedType === "flat") {
+        filtered = allProperties.filter(p => p.type && p.type.toLowerCase().includes("flat"));
+      } else if (selectedType === "villa") {
+        // FIXED HOMESTAY FILTER: Show properties with homestay-specific types
+        filtered = allProperties.filter(p => {
+          if (!p.type) return false;
+          const type = p.type.toLowerCase();
+          // Homestays are 1BHK, 2BHK, 3BHK, Bungalow from the add-homestay form
+          return type.includes("1bhk") || type.includes("2bhk") || type.includes("3bhk") || type.includes("bungalow");
+        });
+      } else {
+        filtered = allProperties;
+      }
+      
+      console.log("Filtered properties:", filtered.length);
+      if (filtered.length === 0) {
+        console.log("No properties found for filter:", selectedType);
+        console.log("Available types:", [...new Set(allProperties.map(p => p.type))]);
+      }
+      renderProperties(filtered);
+    });
   });
-});
+}
+
+// Debug function to check property types
+function debugPropertyTypes() {
+  const types = [...new Set(allProperties.map(p => p.type))];
+  console.log("Available property types:", types);
+  return types;
+}
 
 // ==========================
-// User Login State (Show/Hide Login, Signup, Logout)
+// User Authentication
 // ==========================
 document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
@@ -196,3 +335,38 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+// ==========================
+// AGGRESSIVE Window Event Listeners
+// ==========================
+window.addEventListener('load', function() {
+  setTimeout(forceEqualCardHeights, 100);
+  setTimeout(forceEqualCardHeights, 500);
+});
+
+window.addEventListener('resize', function() {
+  setTimeout(forceEqualCardHeights, 100);
+});
+
+// Equalize heights on any interaction
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('filter-option')) {
+    setTimeout(() => {
+      forceEqualCardHeights();
+      setTimeout(forceEqualCardHeights, 300);
+    }, 200);
+  }
+});
+
+// MutationObserver for dynamic content changes
+const observer = new MutationObserver(function(mutations) {
+  mutations.forEach(function(mutation) {
+    if (mutation.type === 'childList') {
+      setTimeout(forceEqualCardHeights, 100);
+    }
+  });
+});
+
+if (list) {
+  observer.observe(list, { childList: true, subtree: true });
+}

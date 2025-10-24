@@ -7,12 +7,16 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- Mobile Menu Toggle -->
+  <button class="menu-toggle" id="menuToggle">☰</button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
   <div class="container">
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
       <!-- Logo Section -->
       <div class="logo">
-        <img src="logo.png" alt="RentEase Logo" class="logo-img">
+        <img src="logo.png" alt="MyNest Logo" class="logo-img">
         <div>
           <h3 class="brand-name">MyNest</h3>
           <p class="brand-tagline">Find Your Perfect Home</p>
@@ -26,7 +30,7 @@
           <li><a href="home.html" class="active"><span class="icon">🔍</span> Search Properties</a></li>
           <li><a href="add-property.html"><span class="icon">➕</span> Add Property</a></li>
           <li><a href="my-properties.html"><span class="icon">📋</span> My Properties</a></li>
-          <li><a href="add-homestay.html" class="active"><span class="icon">🏡</span> Add Homestay</a></li>
+          <li><a href="add-homestay.html"><span class="icon">🏡</span> Add Homestay</a></li>
           <li><a href="signup.html" id="signup-link"><span class="icon">📝</span> Sign Up</a></li>
           <li><a href="login.html" id="login-link"><span class="icon">🔑</span> Login</a></li>
         </ul>
@@ -59,13 +63,14 @@
         <div class="search-box">
           <input id="search-input" type="text" placeholder="Search by city, area, or property name..." readonly />
           <button id="search-btn">Search</button>
+        </div>
 
-          <!-- New Quick Filter Options -->
-          <div class="quick-filters">
-            <button type="button" class="filter-option" data-type="pg">PG</button>
-            <button type="button" class="filter-option" data-type="apartment">RENT</button>
-            <button type="button" class="filter-option" data-type="villa">HOMESTAY</button>
-          </div>
+        <!-- Quick Filter Options - Now below search bar -->
+        <div class="quick-filters">
+          <button type="button" class="filter-option" data-type="pg">PG</button>
+          <button type="button" class="filter-option" data-type="apartment">RENT</button>
+          <button type="button" class="filter-option" data-type="flat">FLAT</button>
+          <button type="button" class="filter-option" data-type="villa">HOMESTAY</button>
         </div>
 
         <!-- Popup Modal for Advanced Search -->
@@ -83,6 +88,7 @@
                 <option value="any">Any</option>
                 <option value="pg">PG's</option>
                 <option value="apartment">Rental Apartment</option>
+                <option value="flat">Flat</option>
                 <option value="villa">Homestay's</option>
               </select>
         
