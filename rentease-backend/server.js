@@ -28,9 +28,14 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/api", authRoutes);
 app.use("/api/properties", propertyRoutes);
 
-// Catch-all route to serve frontend HTML files for non-API routes
+// Catch-all route for frontend (non-API requests)
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "home.html")); // default page
+  // Only send frontend HTML if the request is NOT for /api
+  if (!req.path.startsWith("/api")) {
+    res.sendFile(path.join(__dirname, "public", "home.html"));
+  } else {
+    res.status(404).json({ message: "API route not found" });
+  }
 });
 
 // Global Error Handler
