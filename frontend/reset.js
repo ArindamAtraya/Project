@@ -1,5 +1,3 @@
-// reset.js
-
 // Pre-fill email if it was stored from forgot password page
 window.addEventListener('DOMContentLoaded', () => {
   const savedEmail = localStorage.getItem('resetEmail');
@@ -39,8 +37,13 @@ document.getElementById("resetForm").addEventListener("submit", async (e) => {
   submitBtn.disabled = true;
   submitBtn.innerHTML = 'Resetting... <span class="spinner"></span>';
 
+  // ✅ Dynamic backend URL
+  const API_BASE = window.location.hostname.includes("localhost")
+    ? "http://localhost:4000"
+    : "https://rentease-backend.onrender.com"; // replace with your Render backend URL
+
   try {
-    const res = await fetch("http://localhost:4000/api/reset-password", {
+    const res = await fetch(`${API_BASE}/api/reset-password`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, otp, newPassword }),

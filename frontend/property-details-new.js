@@ -11,9 +11,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+  // Determine backend URL dynamically
+  const API_BASE = window.location.hostname.includes("localhost")
+    ? "http://localhost:4000"
+    : "https://rentease-backend.onrender.com"; // 🔗 replace with your Render backend URL
+
   try {
     // Fetch from backend
-    const res = await fetch(`http://localhost:4000/api/properties/${selectedId}`);
+    const res = await fetch(`${API_BASE}/api/properties/${selectedId}`);
     const data = await res.json();
 
     if (!res.ok) {
@@ -32,13 +37,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         img.alt = property.title;
         gallery.appendChild(img);
       });
-      document.getElementById('scroll-left').addEventListener('click', () => {
-  document.getElementById('image-gallery').scrollBy({ left: -300, behavior: 'smooth' });
-});
-document.getElementById('scroll-right').addEventListener('click', () => {
-  document.getElementById('image-gallery').scrollBy({ left: 300, behavior: 'smooth' });
-});
 
+      document.getElementById('scroll-left').addEventListener('click', () => {
+        document.getElementById('image-gallery').scrollBy({ left: -300, behavior: 'smooth' });
+      });
+      document.getElementById('scroll-right').addEventListener('click', () => {
+        document.getElementById('image-gallery').scrollBy({ left: 300, behavior: 'smooth' });
+      });
 
       // Right Details Box
       document.getElementById("property-price").textContent = property.price || "";

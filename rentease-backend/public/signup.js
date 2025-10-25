@@ -1,21 +1,17 @@
 document.addEventListener("DOMContentLoaded", function() {
+  const API_BASE = window.location.hostname.includes("localhost")
+    ? "http://localhost:4000"
+    : "https://rentease-backend.onrender.com"; // replace with your Render backend URL
+
   const sendOtpBtn = document.getElementById("sendOtpBtn");
   const signupForm = document.getElementById("signupForm");
   const signupBtn = document.getElementById("signupBtn");
 
-  // Add CSS for OTP hint
+  // Add CSS for OTP hint and password strength
   const style = document.createElement('style');
   style.textContent = `
-    .otp-hint {
-      color: #666;
-      font-size: 12px;
-      margin-top: 5px;
-      display: block;
-    }
-    .password-strength {
-      margin-top: 5px;
-      font-size: 12px;
-    }
+    .otp-hint { color: #666; font-size: 12px; margin-top: 5px; display: block; }
+    .password-strength { margin-top: 5px; font-size: 12px; }
     .strength-weak { color: #dc3545; }
     .strength-medium { color: #ffc107; }
     .strength-strong { color: #28a745; }
@@ -30,8 +26,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   function checkPasswordStrength(password) {
     const strengthDiv = document.querySelector('.password-strength') || createStrengthIndicator();
-    let strength = 'Weak';
-    let strengthClass = 'strength-weak';
+    let strength = 'Weak', strengthClass = 'strength-weak';
 
     if (password.length >= 8) {
       const hasUpperCase = /[A-Z]/.test(password);
@@ -41,13 +36,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
       const requirementsMet = [hasUpperCase, hasLowerCase, hasNumbers, hasSpecialChar].filter(Boolean).length;
 
-      if (requirementsMet >= 3 && password.length >= 10) {
-        strength = 'Strong';
-        strengthClass = 'strength-strong';
-      } else if (requirementsMet >= 2) {
-        strength = 'Medium';
-        strengthClass = 'strength-medium';
-      }
+      if (requirementsMet >= 3 && password.length >= 10) { strength = 'Strong'; strengthClass = 'strength-strong'; }
+      else if (requirementsMet >= 2) { strength = 'Medium'; strengthClass = 'strength-medium'; }
     }
 
     strengthDiv.textContent = `Password strength: ${strength}`;
@@ -67,37 +57,16 @@ document.addEventListener("DOMContentLoaded", function() {
     const password = document.getElementById("signupPassword").value;
     const confirmPassword = document.getElementById("signupConfirmPassword").value;
 
-    // Validate inputs
-    if (!name || !email || !password || !confirmPassword) {
-      showMessage('Please fill in all fields', 'error');
-      return;
-    }
+    if (!name || !email || !password || !confirmPassword) { showMessage('Please fill in all fields', 'error'); return; }
+    if (name.length < 2) { showMessage('Please enter a valid name', 'error'); return; }
+    if (!isValidEmail(email)) { showMessage('Please enter a valid email address', 'error'); return; }
+    if (password.length < 6) { showMessage('Password must be at least 6 characters long', 'error'); return; }
+    if (password !== confirmPassword) { showMessage('Passwords do not match', 'error'); return; }
 
-    if (name.length < 2) {
-      showMessage('Please enter a valid name', 'error');
-      return;
-    }
-
-    if (!isValidEmail(email)) {
-      showMessage('Please enter a valid email address', 'error');
-      return;
-    }
-
-    if (password.length < 6) {
-      showMessage('Password must be at least 6 characters long', 'error');
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      showMessage('Passwords do not match', 'error');
-      return;
-    }
-
-    // Show loading state
     setOtpButtonState(true, 'Sending OTP...');
 
     try {
-      const res = await fetch("http://localhost:4000/api/send-signup-otp", {
+      const res = await fetch(`${API_BASE}/api/send-signup-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, name }),
@@ -107,16 +76,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
       if (res.ok) {
         showMessage('✅ OTP sent to your email! Please check your inbox.', 'success');
-        
-        // Show OTP input and signup button
         document.querySelector(".otp-group").style.display = "block";
         signupBtn.style.display = "block";
         sendOtpBtn.style.display = "none";
-        
-        // Auto-focus OTP input
         document.getElementById("signupOtp").focus();
-        
-        // Start OTP expiry timer
         startOtpTimer();
       } else {
         showMessage('❌ ' + (data.message || "Failed to send OTP"), 'error');
@@ -137,21 +100,13 @@ document.addEventListener("DOMContentLoaded", function() {
     const password = document.getElementById("signupPassword").value;
     const otp = document.getElementById("signupOtp").value.trim();
 
-    if (!otp) {
-      showMessage('Please enter the OTP', 'error');
-      return;
-    }
+    if (!otp) { showMessage('Please enter the OTP', 'error'); return; }
+    if (otp.length !== 6 || !/^\d+$/.test(otp)) { showMessage('Please enter a valid 6-digit OTP', 'error'); return; }
 
-    if (otp.length !== 6 || !/^\d+$/.test(otp)) {
-      showMessage('Please enter a valid 6-digit OTP', 'error');
-      return;
-    }
-
-    // Show loading state
     setSignupButtonState(true, 'Verifying...');
 
     try {
-      const res = await fetch("http://localhost:4000/api/verify-signup-otp", {
+      const res = await fetch(`${API_BASE}/api/verify-signup-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password, otp }),
@@ -161,11 +116,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
       if (res.ok) {
         showMessage('✅ Account created successfully! Redirecting to login...', 'success');
-        
-        // Redirect after delay
-        setTimeout(() => {
-          window.location.href = "login.html";
-        }, 2000);
+        setTimeout(() => { window.location.href = "login.html"; }, 2000);
       } else {
         showMessage('❌ ' + (data.message || "OTP verification failed"), 'error');
       }
@@ -178,54 +129,24 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   // Helper functions
-  function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
-
+  function isValidEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
   function showMessage(message, type) {
-    // Remove existing messages
-    const existingMessage = document.querySelector('.message');
-    if (existingMessage) {
-      existingMessage.remove();
-    }
-
+    const existingMessage = document.querySelector('.message'); if (existingMessage) existingMessage.remove();
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${type === 'error' ? 'error-message' : 'success-message'}`;
     messageDiv.textContent = message;
-    
-    // Insert after the form title
     const form = document.getElementById('signupForm');
     form.parentNode.insertBefore(messageDiv, form);
-    
-    // Auto-remove success messages after 5 seconds
-    if (type === 'success') {
-      setTimeout(() => {
-        if (messageDiv.parentNode) {
-          messageDiv.remove();
-        }
-      }, 5000);
-    }
+    if (type === 'success') setTimeout(() => { if (messageDiv.parentNode) messageDiv.remove(); }, 5000);
   }
-
-  function setOtpButtonState(isLoading, text) {
-    sendOtpBtn.disabled = isLoading;
-    sendOtpBtn.innerHTML = isLoading ? '<div class="loading"></div> ' + text : text;
-    sendOtpBtn.style.opacity = isLoading ? '0.7' : '1';
-  }
-
-  function setSignupButtonState(isLoading, text) {
-    signupBtn.disabled = isLoading;
-    signupBtn.innerHTML = isLoading ? '<div class="loading"></div> ' + text : text;
-    signupBtn.style.opacity = isLoading ? '0.7' : '1';
-  }
+  function setOtpButtonState(isLoading, text) { sendOtpBtn.disabled = isLoading; sendOtpBtn.innerHTML = isLoading ? '<div class="loading"></div> ' + text : text; sendOtpBtn.style.opacity = isLoading ? '0.7' : '1'; }
+  function setSignupButtonState(isLoading, text) { signupBtn.disabled = isLoading; signupBtn.innerHTML = isLoading ? '<div class="loading"></div> ' + text : text; signupBtn.style.opacity = isLoading ? '0.7' : '1'; }
 
   function startOtpTimer() {
-    let timeLeft = 300; // 5 minutes
+    let timeLeft = 300;
     const timerElement = document.createElement('div');
     timerElement.className = 'otp-timer';
     timerElement.style.cssText = 'color: #666; font-size: 12px; margin-top: 5px; text-align: center;';
-    
     const otpGroup = document.querySelector('.otp-group');
     const existingTimer = otpGroup.querySelector('.otp-timer');
     if (existingTimer) existingTimer.remove();
@@ -235,13 +156,10 @@ document.addEventListener("DOMContentLoaded", function() {
       const minutes = Math.floor(timeLeft / 60);
       const seconds = timeLeft % 60;
       timerElement.textContent = `OTP expires in: ${minutes}:${seconds.toString().padStart(2, '0')}`;
-
       if (timeLeft <= 0) {
         clearInterval(timer);
         timerElement.textContent = 'OTP has expired. Please request a new one.';
         timerElement.style.color = '#dc3545';
-        
-        // Show send OTP button again
         sendOtpBtn.style.display = 'block';
         signupBtn.style.display = 'none';
         document.querySelector(".otp-group").style.display = "none";
@@ -250,66 +168,36 @@ document.addEventListener("DOMContentLoaded", function() {
     }, 1000);
   }
 
-  // Real-time validation
   const inputs = document.querySelectorAll('input');
   inputs.forEach(input => {
-    input.addEventListener('blur', function() {
-      validateField(this);
-    });
-
-    input.addEventListener('input', function() {
-      // Clear error styling when user starts typing
-      if (this.style.borderColor === 'rgb(220, 53, 69)') {
-        this.style.borderColor = '#e0e0e0';
-      }
-    });
+    input.addEventListener('blur', () => validateField(input));
+    input.addEventListener('input', () => { if (input.style.borderColor === 'rgb(220, 53, 69)') input.style.borderColor = '#e0e0e0'; });
   });
 
   function validateField(field) {
     const value = field.value.trim();
-    
-    if (!value) {
-      field.style.borderColor = '#e0e0e0';
-      return;
-    }
+    if (!value) { field.style.borderColor = '#e0e0e0'; return; }
 
     switch(field.type) {
-      case 'email':
-        field.style.borderColor = isValidEmail(value) ? '#28a745' : '#dc3545';
-        break;
+      case 'email': field.style.borderColor = isValidEmail(value) ? '#28a745' : '#dc3545'; break;
       case 'password':
         if (field.id === 'signupConfirmPassword') {
           const password = document.getElementById('signupPassword').value;
           field.style.borderColor = value === password ? '#28a745' : '#dc3545';
-        } else {
-          field.style.borderColor = value.length >= 6 ? '#28a745' : '#dc3545';
-        }
+        } else { field.style.borderColor = value.length >= 6 ? '#28a745' : '#dc3545'; }
         break;
-      case 'text':
-        if (field.id === 'signupName') {
-          field.style.borderColor = value.length >= 2 ? '#28a745' : '#dc3545';
-        }
-        break;
+      case 'text': if (field.id === 'signupName') field.style.borderColor = value.length >= 2 ? '#28a745' : '#dc3545'; break;
     }
   }
 
-  // Handle back button
   const backButton = document.querySelector('.back-button');
-  if (backButton) {
-    backButton.addEventListener('click', function(e) {
-      e.preventDefault();
-      if (window.history.length > 1) {
-        window.history.back();
-      } else {
-        window.location.href = 'home.html';
-      }
-    });
-  }
+  if (backButton) backButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (window.history.length > 1) window.history.back();
+    else window.location.href = 'home.html';
+  });
 
-  // Enter key support for OTP
   document.getElementById('signupOtp')?.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter' && signupBtn.style.display !== 'none') {
-      signupForm.dispatchEvent(new Event('submit'));
-    }
+    if (e.key === 'Enter' && signupBtn.style.display !== 'none') signupForm.dispatchEvent(new Event('submit'));
   });
 });

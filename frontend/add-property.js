@@ -1,4 +1,3 @@
-// add-property.js
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("propertyForm");
 
@@ -12,6 +11,11 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // Determine backend URL (local or live)
+    const API_BASE = window.location.hostname.includes("localhost")
+      ? "http://localhost:4000"
+      : "https://rentease-backend.onrender.com"; // 🔗 change if your Render backend URL differs
+
     // Collect form data
     const formData = new FormData(form);
 
@@ -24,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     amenities.forEach((a) => formData.append("amenities[]", a));
 
     try {
-      const response = await fetch("http://localhost:4000/api/properties/add-property", {
+      const response = await fetch(`${API_BASE}/api/properties/add-property`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

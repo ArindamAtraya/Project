@@ -1,4 +1,3 @@
-// forget-password.js
 document.getElementById("forgotForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -16,8 +15,13 @@ document.getElementById("forgotForm").addEventListener("submit", async (e) => {
   submitBtn.disabled = true;
   submitBtn.innerHTML = 'Sending... <span class="spinner"></span>';
 
+  // Determine backend URL dynamically
+  const API_BASE = window.location.hostname.includes("localhost")
+    ? "http://localhost:4000"
+    : "https://rentease-backend.onrender.com"; // 🔗 change to your Render backend URL
+
   try {
-    const res = await fetch("http://localhost:4000/api/forgot-password", {
+    const res = await fetch(`${API_BASE}/api/forgot-password`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),

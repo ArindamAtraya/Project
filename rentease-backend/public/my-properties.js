@@ -17,8 +17,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   imagePreview.id = "imagePreview";
   imagePreview.className = "flex flex-wrap gap-2 mt-2";
 
+  // Determine backend URL dynamically
+  const API_BASE = window.location.hostname.includes("localhost")
+    ? "http://localhost:4000"
+    : "https://rentease-backend.onrender.com"; // 🔗 change to your Render backend URL
+
   try {
-    const response = await fetch("http://localhost:4000/api/properties/my-properties", {
+    const response = await fetch(`${API_BASE}/api/properties/my-properties`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -85,7 +90,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!confirm("🗑️ Are you sure you want to delete this property?")) return;
 
         try {
-          const res = await fetch(`http://localhost:4000/api/properties/${id}`, {
+          const res = await fetch(`${API_BASE}/api/properties/${id}`, {
             method: "DELETE",
             headers: { Authorization: `Bearer ${token}` },
           });
@@ -111,7 +116,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const id = btn.getAttribute("data-id");
 
         try {
-          const res = await fetch(`http://localhost:4000/api/properties/${id}`);
+          const res = await fetch(`${API_BASE}/api/properties/${id}`);
           const result = await res.json();
 
           if (!res.ok) {
@@ -196,7 +201,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       formData.append("existingImages", JSON.stringify(existingImages));
 
       try {
-        const res = await fetch(`http://localhost:4000/api/properties/${id}`, {
+        const res = await fetch(`${API_BASE}/api/properties/${id}`, {
           method: "PUT",
           headers: { Authorization: `Bearer ${token}` },
           body: formData,

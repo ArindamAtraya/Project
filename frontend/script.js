@@ -45,48 +45,30 @@ document.addEventListener('DOMContentLoaded', function() {
 function forceEqualCardHeights() {
   const cards = document.querySelectorAll('.property-card');
   if (cards.length === 0) return;
-  
-  console.log('Forcing equal card heights for', cards.length, 'cards');
-  
-  // FIRST: Remove any existing height styles
+
   cards.forEach(card => {
     card.style.height = '';
     card.style.minHeight = '';
   });
-  
-  // SECOND: Use CSS important through style attribute
+
   let maxHeight = 0;
-  
-  // Find the maximum height
   cards.forEach(card => {
     const cardHeight = card.scrollHeight;
-    if (cardHeight > maxHeight) {
-      maxHeight = cardHeight;
-    }
+    if (cardHeight > maxHeight) maxHeight = cardHeight;
   });
-  
-  console.log('Max height found:', maxHeight);
-  
-  // THIRD: Apply the maximum height to ALL cards
+
   cards.forEach(card => {
     card.style.height = maxHeight + 'px';
     card.style.minHeight = maxHeight + 'px';
     card.style.overflow = 'hidden';
   });
-  
-  // FOURTH: Double check after a delay
+
   setTimeout(() => {
     let finalMaxHeight = 0;
     cards.forEach(card => {
-      const height = card.offsetHeight;
-      if (height > finalMaxHeight) finalMaxHeight = height;
+      if (card.offsetHeight > finalMaxHeight) finalMaxHeight = card.offsetHeight;
     });
-    
-    cards.forEach(card => {
-      card.style.height = finalMaxHeight + 'px';
-    });
-    
-    console.log('Final enforced height:', finalMaxHeight);
+    cards.forEach(card => { card.style.height = finalMaxHeight + 'px'; });
   }, 100);
 }
 
@@ -96,14 +78,19 @@ function forceEqualCardHeights() {
 let allProperties = [];
 
 async function fetchProperties() {
+  // ✅ Dynamic backend URL
+  const API_BASE = window.location.hostname.includes("localhost")
+    ? "http://localhost:4000"
+    : "https://rentease-backend.onrender.com"; // replace with your Render backend URL
+
   try {
-    const res = await fetch("http://localhost:4000/api/properties");
+    const res = await fetch(`${API_BASE}/api/properties`);
     const data = await res.json();
 
     if (data.properties) {
       allProperties = data.properties;
       renderProperties(allProperties);
-      initializeFilters(); // Initialize filters after loading properties
+      initializeFilters();
     } else {
       renderProperties([]);
       initializeFilters();
@@ -130,10 +117,9 @@ function renderProperties(data) {
     const card = document.createElement("div");
     card.className = "property-card";
 
-    // STRICT content limiting for equal sizes
     const title = p.title && p.title.length > 50 ? p.title.substring(0, 50) + '...' : p.title;
     const amenities = p.amenities && p.amenities.length 
-      ? p.amenities.slice(0, 4).map(a => `<span>${a}</span>`).join("") // Only 4 amenities max
+      ? p.amenities.slice(0, 4).map(a => `<span>${a}</span>`).join("") 
       : "<span>No amenities</span>";
 
     card.innerHTML = `
@@ -152,9 +138,7 @@ function renderProperties(data) {
           <span>🛁 ${p.baths || "-"} Bath</span>
           <span class="furnishing">${p.furnishing || "N/A"}</span>
         </div>
-        <div class="amenities">
-          ${amenities}
-        </div>
+        <div class="amenities">${amenities}</div>
         <div class="actions">
           <button class="btn view" data-link="property-details.html" data-id="${p._id}">
             <span>👁</span> View Details
@@ -167,8 +151,7 @@ function renderProperties(data) {
   });
 
   countHeading.textContent = `${data.length} Properties Found`;
-  
-  // AGGRESSIVE equal height enforcement
+
   setTimeout(forceEqualCardHeights, 50);
   setTimeout(forceEqualCardHeights, 200);
   setTimeout(forceEqualCardHeights, 500);
@@ -178,7 +161,7 @@ function renderProperties(data) {
 fetchProperties();
 
 // ==========================
-// Search and Filter Functionality - UPDATED
+// Search and Filter Functionality
 // ==========================
 const searchInput = document.getElementById("search-input");
 const searchModal = document.getElementById("searchModal");
@@ -213,57 +196,33 @@ if (searchForm) {
   });
 }
 
-// Quick filters - FIXED VERSION (WITH WORKING HOMESTAY)
+// ==========================
+// Quick Filters
+// ==========================
 function initializeFilters() {
   const filterButtons = document.querySelectorAll(".filter-option");
-  
-  console.log("Total filter buttons:", filterButtons.length);
-  
+
   filterButtons.forEach(btn => {
     btn.addEventListener("click", function() {
-      // Remove active class from all buttons
       filterButtons.forEach(b => b.classList.remove("active"));
-      // Add active class to clicked button
       this.classList.add("active");
-      
+
       const selectedType = this.getAttribute("data-type");
-      console.log("Filtering by type:", selectedType, "from button:", this.textContent);
-      
       let filtered;
-      
-      if (selectedType === "pg") {
-        filtered = allProperties.filter(p => p.type && p.type.toLowerCase().includes("pg"));
-      } else if (selectedType === "apartment") {
-        filtered = allProperties.filter(p => p.type && (p.type.toLowerCase().includes("apartment") || p.type.toLowerCase().includes("rent")));
-      } else if (selectedType === "flat") {
-        filtered = allProperties.filter(p => p.type && p.type.toLowerCase().includes("flat"));
-      } else if (selectedType === "villa") {
-        // FIXED HOMESTAY FILTER: Show properties with homestay-specific types
-        filtered = allProperties.filter(p => {
-          if (!p.type) return false;
-          const type = p.type.toLowerCase();
-          // Homestays are 1BHK, 2BHK, 3BHK, Bungalow from the add-homestay form
-          return type.includes("1bhk") || type.includes("2bhk") || type.includes("3bhk") || type.includes("bungalow");
-        });
-      } else {
-        filtered = allProperties;
-      }
-      
-      console.log("Filtered properties:", filtered.length);
-      if (filtered.length === 0) {
-        console.log("No properties found for filter:", selectedType);
-        console.log("Available types:", [...new Set(allProperties.map(p => p.type))]);
-      }
+
+      if (selectedType === "pg") filtered = allProperties.filter(p => p.type && p.type.toLowerCase().includes("pg"));
+      else if (selectedType === "apartment") filtered = allProperties.filter(p => p.type && (p.type.toLowerCase().includes("apartment") || p.type.toLowerCase().includes("rent")));
+      else if (selectedType === "flat") filtered = allProperties.filter(p => p.type && p.type.toLowerCase().includes("flat"));
+      else if (selectedType === "villa") filtered = allProperties.filter(p => {
+        if (!p.type) return false;
+        const type = p.type.toLowerCase();
+        return type.includes("1bhk") || type.includes("2bhk") || type.includes("3bhk") || type.includes("bungalow");
+      });
+      else filtered = allProperties;
+
       renderProperties(filtered);
     });
   });
-}
-
-// Debug function to check property types
-function debugPropertyTypes() {
-  const types = [...new Set(allProperties.map(p => p.type))];
-  console.log("Available property types:", types);
-  return types;
 }
 
 // ==========================
@@ -283,23 +242,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (nav) {
       const navList = nav.querySelector("ul");
-      if (navList) {
-        const existingLogout = navList.querySelector("a[href='#'][style*='red']");
-        if (existingLogout) existingLogout.parentElement.remove();
-
-        const logoutItem = document.createElement("li");
-        const logoutBtn = document.createElement("a");
-        logoutBtn.href = "#";
-        logoutBtn.textContent = "🚪 Logout";
-        logoutBtn.style.color = "red";
-        logoutBtn.addEventListener("click", () => {
-          localStorage.removeItem("token");
-          localStorage.removeItem("userName");
-          window.location.href = "login.html";
-        });
-        logoutItem.appendChild(logoutBtn);
-        navList.appendChild(logoutItem);
-      }
+      const logoutItem = document.createElement("li");
+      const logoutBtn = document.createElement("a");
+      logoutBtn.href = "#";
+      logoutBtn.textContent = "🚪 Logout";
+      logoutBtn.style.color = "red";
+      logoutBtn.addEventListener("click", () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userName");
+        window.location.href = "login.html";
+      });
+      logoutItem.appendChild(logoutBtn);
+      navList.appendChild(logoutItem);
     }
 
     const existingUserInfo = document.getElementById("user-info");
@@ -337,7 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ==========================
-// AGGRESSIVE Window Event Listeners
+// Window Event Listeners
 // ==========================
 window.addEventListener('load', function() {
   setTimeout(forceEqualCardHeights, 100);
@@ -348,7 +302,6 @@ window.addEventListener('resize', function() {
   setTimeout(forceEqualCardHeights, 100);
 });
 
-// Equalize heights on any interaction
 document.addEventListener('click', function(e) {
   if (e.target.classList.contains('filter-option')) {
     setTimeout(() => {
@@ -358,7 +311,6 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// MutationObserver for dynamic content changes
 const observer = new MutationObserver(function(mutations) {
   mutations.forEach(function(mutation) {
     if (mutation.type === 'childList') {

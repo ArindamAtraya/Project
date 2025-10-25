@@ -1,4 +1,9 @@
 document.addEventListener("DOMContentLoaded", function() {
+  // ✅ Dynamic API base URL
+  const API_BASE = window.location.hostname.includes("localhost")
+    ? "http://localhost:4000"
+    : window.location.origin; // e.g. https://mynest-sr8f.onrender.com
+
   const loginForm = document.getElementById("loginForm");
   const loginButton = loginForm.querySelector('.btn-primary');
   
@@ -23,7 +28,8 @@ document.addEventListener("DOMContentLoaded", function() {
     setLoadingState(true);
 
     try {
-      const res = await fetch("http://localhost:4000/api/login", {
+      // ✅ Use dynamic API base
+      const res = await fetch(`${API_BASE}/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -59,27 +65,18 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Helper function to show messages
   function showMessage(message, type) {
-    // Remove existing messages
     const existingMessage = document.querySelector('.message');
-    if (existingMessage) {
-      existingMessage.remove();
-    }
+    if (existingMessage) existingMessage.remove();
 
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${type === 'error' ? 'error-message' : 'success-message'}`;
     messageDiv.textContent = message;
     
-    // Insert after the form title
     const form = document.getElementById('loginForm');
     form.parentNode.insertBefore(messageDiv, form);
     
-    // Auto-remove success messages after 3 seconds
     if (type === 'success') {
-      setTimeout(() => {
-        if (messageDiv.parentNode) {
-          messageDiv.remove();
-        }
-      }, 3000);
+      setTimeout(() => messageDiv.remove(), 3000);
     }
   }
 
