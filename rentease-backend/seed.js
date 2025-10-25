@@ -1,4 +1,3 @@
-// seed.js
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import Property from "./models/Property.js";
@@ -92,16 +91,25 @@ const properties = [
   }
 ];
 
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(async () => {
+const seedDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
     console.log("✅ MongoDB Connected");
+
     await Property.deleteMany();
+    console.log("🗑️ Existing properties cleared");
+
     await Property.insertMany(properties);
     console.log("🌱 Properties seeded successfully!");
-    process.exit();
-  })
-  .catch((err) => {
-    console.error("❌ DB Connection Error:", err);
+
+    process.exit(0);
+  } catch (err) {
+    console.error("❌ DB Connection/Seeding Error:", err);
     process.exit(1);
-  });
+  }
+};
+
+seedDB();

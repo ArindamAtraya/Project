@@ -5,10 +5,10 @@ import nodemailer from "nodemailer";
 import User from "../models/User.js";
 
 const router = express.Router();
-let otpStore = {};
+let otpStore = {}; // dynamic OTP store
 
 // ========================
-// 1. SIGNUP (legacy route, optional now)
+// 1. SIGNUP (legacy, optional)
 // ========================
 router.post("/signup", async (req, res) => {
   try {
@@ -61,22 +61,17 @@ router.post("/login", async (req, res) => {
 });
 
 // ========================
-// 3. FORGOT PASSWORD (Send OTP)
+// 3. FORGOT PASSWORD
 // ========================
 router.post("/forgot-password", async (req, res) => {
   try {
     const { email } = req.body;
-    console.log("📩 Forgot password request for:", email);
 
     const user = await User.findOne({ email });
-    if (!user) {
-      console.log("❌ Email not found");
-      return res.status(400).json({ message: "Email not found" });
-    }
+    if (!user) return res.status(400).json({ message: "Email not found" });
 
     const otp = Math.floor(100000 + Math.random() * 900000);
     otpStore[email] = otp;
-    console.log("✅ OTP generated:", otp);
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -90,13 +85,10 @@ router.post("/forgot-password", async (req, res) => {
       text: `Your OTP for password reset is ${otp}. It is valid for 5 minutes.`
     });
 
-    console.log("📨 OTP email sent successfully to", email);
-
     setTimeout(() => delete otpStore[email], 5 * 60 * 1000);
 
     res.json({ message: "OTP sent to your email" });
   } catch (err) {
-    console.error("💥 Forgot password error:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
@@ -128,23 +120,15 @@ router.post("/reset-password", async (req, res) => {
 router.post("/send-signup-otp", async (req, res) => {
   try {
     const { email } = req.body;
-    console.log("📨 Signup OTP requested for:", email);
 
     if (!email) return res.status(400).json({ message: "Email is required" });
 
     const otp = Math.floor(100000 + Math.random() * 900000);
     otpStore[email] = otp;
-    console.log("✅ Generated OTP:", otp);
-
-    console.log("📧 EMAIL_USER:", process.env.EMAIL_USER);
-    console.log("📧 EMAIL_PASS:", process.env.EMAIL_PASS ? "Loaded ✅" : "❌ Missing");
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
+      auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
     });
 
     await transporter.sendMail({
@@ -154,13 +138,10 @@ router.post("/send-signup-otp", async (req, res) => {
       text: `Your MyNest signup OTP is ${otp}. It is valid for 5 minutes.`
     });
 
-    console.log("✅ Signup OTP sent successfully to", email);
-
     setTimeout(() => delete otpStore[email], 5 * 60 * 1000);
 
     res.json({ message: "OTP sent to your email" });
   } catch (err) {
-    console.error("💥 Error sending signup OTP:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
@@ -171,19 +152,14 @@ router.post("/send-signup-otp", async (req, res) => {
 router.post("/verify-signup-otp", async (req, res) => {
   try {
     const { name, email, password, otp } = req.body;
-    console.log("🔍 Verifying signup OTP for:", email, "OTP:", otp);
 
-    if (!otpStore[email])
-      return res.status(400).json({ message: "OTP expired or not requested" });
-
-    if (otpStore[email] !== parseInt(otp))
-      return res.status(400).json({ message: "Invalid OTP" });
+    if (!otpStore[email]) return res.status(400).json({ message: "OTP expired or not requested" });
+    if (otpStore[email] !== parseInt(otp)) return res.status(400).json({ message: "Invalid OTP" });
 
     delete otpStore[email];
 
     const existingUser = await User.findOne({ email });
-    if (existingUser)
-      return res.status(400).json({ message: "Email already registered" });
+    if (existingUser) return res.status(400).json({ message: "Email already registered" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ name, email, password: hashedPassword });
@@ -191,7 +167,6 @@ router.post("/verify-signup-otp", async (req, res) => {
 
     res.json({ message: "Signup successful! You can now login." });
   } catch (err) {
-    console.error("💥 Error verifying signup OTP and creating user:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
