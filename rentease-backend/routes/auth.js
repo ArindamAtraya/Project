@@ -2,10 +2,13 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import { Resend } from "resend"; // ✅ added
 import User from "../models/User.js";
 
 const router = express.Router();
 let otpStore = {}; // temporary OTP store
+
+const resend = new Resend(process.env.RESEND_API_KEY); // ✅ added
 
 /**
  * ========================
@@ -82,19 +85,27 @@ router.post("/forgot-password", async (req, res) => {
     otpStore[email] = otp;
     console.log(`🔢 OTP generated: ${otp}`);
 
-    const transporter = createTransporter();
-    console.log("📨 Sending OTP email...");
-
-    await transporter.sendMail({
-      from: `"MyNest Support" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: "Password Reset OTP",
-      text: `Your OTP for password reset is ${otp}. It is valid for 5 minutes.`,
-    });
+    if (process.env.NODE_ENV === "production") {
+      console.log("📨 Sending OTP email via Resend...");
+      await resend.emails.send({
+        from: "MyNest <onboarding@resend.dev>",
+        to: email,
+        subject: "Password Reset OTP",
+        html: `<p>Your OTP for password reset is <b>${otp}</b>. It is valid for 5 minutes.</p>`,
+      });
+    } else {
+      const transporter = createTransporter();
+      console.log("📨 Sending OTP email via Nodemailer...");
+      await transporter.sendMail({
+        from: `"MyNest Support" <${process.env.EMAIL_USER}>`,
+        to: email,
+        subject: "Password Reset OTP",
+        text: `Your OTP for password reset is ${otp}. It is valid for 5 minutes.`,
+      });
+    }
 
     console.log("✅ OTP email sent successfully!");
     setTimeout(() => delete otpStore[email], 5 * 60 * 1000);
-
     res.json({ message: "OTP sent to your email" });
   } catch (err) {
     console.error("❌ Forgot-password error:", err);
@@ -141,19 +152,27 @@ router.post("/send-signup-otp", async (req, res) => {
     otpStore[email] = otp;
     console.log(`🔢 Generated OTP: ${otp}`);
 
-    const transporter = createTransporter();
-    console.log("📨 Sending signup OTP email...");
-
-    await transporter.sendMail({
-      from: `"MyNest Support" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: "Email Verification OTP",
-      text: `Your MyNest signup OTP is ${otp}. It is valid for 5 minutes.`,
-    });
+    if (process.env.NODE_ENV === "production") {
+      console.log("📨 Sending signup OTP via Resend...");
+      await resend.emails.send({
+        from: "MyNest <onboarding@resend.dev>",
+        to: email,
+        subject: "Email Verification OTP",
+        html: `<p>Your MyNest signup OTP is <b>${otp}</b>. It is valid for 5 minutes.</p>`,
+      });
+    } else {
+      const transporter = createTransporter();
+      console.log("📨 Sending signup OTP via Nodemailer...");
+      await transporter.sendMail({
+        from: `"MyNest Support" <${process.env.EMAIL_USER}>`,
+        to: email,
+        subject: "Email Verification OTP",
+        text: `Your MyNest signup OTP is ${otp}. It is valid for 5 minutes.`,
+      });
+    }
 
     console.log("✅ Signup OTP email sent successfully!");
     setTimeout(() => delete otpStore[email], 5 * 60 * 1000);
-
     res.json({ message: "OTP sent to your email" });
   } catch (err) {
     console.error("❌ Error in /send-signup-otp:", err);
@@ -210,7 +229,6 @@ function createTransporter() {
     },
   });
 
-  // Optional: verify connection immediately
   transporter.verify((error, success) => {
     if (error) console.error("❌ Nodemailer verify error:", error.message);
     else console.log("✅ Nodemailer ready to send emails");
