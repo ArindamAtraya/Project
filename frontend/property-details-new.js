@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Determine backend URL dynamically
   const API_BASE = window.location.hostname.includes("localhost")
     ? "http://localhost:4000"
-    : "https://rentease-backend.onrender.com"; // 🔗 replace with your Render backend URL
+    : window.location.origin;  // 🔗 replace with your Render backend URL
 
   try {
     // Fetch from backend

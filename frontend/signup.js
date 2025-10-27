@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
   const API_BASE = window.location.hostname.includes("localhost")
     ? "http://localhost:4000"
-    : "https://rentease-backend.onrender.com"; // replace with your Render backend URL
+    : window.location.origin;  // replace with your Render backend URL
 
   const sendOtpBtn = document.getElementById("sendOtpBtn");
   const signupForm = document.getElementById("signupForm");
