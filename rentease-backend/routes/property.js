@@ -1,8 +1,8 @@
 // rentease-backend/routes/property.js
 import express from "express";
-import { authMiddleware } from "../middleware/authMiddleware.js";
+import authMiddleware from "../middleware/authMiddleware.js"; // ✅ FIXED import (no destructure)
 import Property from "../models/Property.js";
-import upload from "../middleware/upload.js"; // for image uploads
+import upload from "../middleware/upload.js";
 import { v2 as cloudinary } from "cloudinary";
 
 const router = express.Router();
@@ -19,6 +19,7 @@ router.get("/", async (req, res) => {
     const properties = await Property.find();
     res.json({ properties });
   } catch (err) {
+    console.error("❌ Error in GET /:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
@@ -30,16 +31,7 @@ router.get("/:id", async (req, res) => {
     if (!property) return res.status(404).json({ message: "Property not found" });
     res.json({ property });
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
-  }
-});
-
-// Get user's properties (protected)
-router.get("/my-properties", authMiddleware, async (req, res) => {
-  try {
-    const properties = await Property.find({ userId: req.user.id });
-    res.json({ properties });
-  } catch (err) {
+    console.error("❌ Error in GET /:id:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
@@ -49,6 +41,23 @@ router.get("/my-properties", authMiddleware, async (req, res) => {
  * PROTECTED ROUTES
  * ========================
  */
+
+// Get user's properties (protected)
+router.get("/my-properties", authMiddleware, async (req, res) => {
+  try {
+    console.log("🔑 Authenticated user:", req.user);
+
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: "Unauthorized: Invalid token" });
+    }
+
+    const properties = await Property.find({ userId: req.user.id });
+    res.json({ properties });
+  } catch (err) {
+    console.error("❌ Error loading my-properties:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
 
 // Add new property with Cloudinary images
 router.post("/add-property", authMiddleware, upload.array("images", 5), async (req, res) => {
@@ -76,6 +85,7 @@ router.post("/add-property", authMiddleware, upload.array("images", 5), async (r
     await property.save();
     res.json({ message: "Property added successfully", property });
   } catch (err) {
+    console.error("❌ Error adding property:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
@@ -87,13 +97,13 @@ router.put("/:id", authMiddleware, upload.array("images", 5), async (req, res) =
     const property = await Property.findOne({ _id: id, userId: req.user.id });
     if (!property) return res.status(404).json({ message: "Property not found or not owned by user" });
 
-    // Normalize amenities
     let amenitiesArray = [];
     if (req.body.amenities) {
-      amenitiesArray = Array.isArray(req.body.amenities) ? req.body.amenities : req.body.amenities.split(",").map(a => a.trim());
+      amenitiesArray = Array.isArray(req.body.amenities)
+        ? req.body.amenities
+        : req.body.amenities.split(",").map(a => a.trim());
     }
 
-    // Build update object
     const updateData = {
       title: req.body.title,
       type: req.body.type,
@@ -107,10 +117,9 @@ router.put("/:id", authMiddleware, upload.array("images", 5), async (req, res) =
       gender: req.body.gender,
       furnishing: req.body.furnishing,
       phone: req.body.phone,
-      amenities: amenitiesArray
+      amenities: amenitiesArray,
     };
 
-    // Handle images: keep existing + new uploads
     let finalImages = [];
     if (req.body.existingImages) {
       try {
@@ -124,7 +133,6 @@ router.put("/:id", authMiddleware, upload.array("images", 5), async (req, res) =
       finalImages = [...finalImages, ...req.files.map(file => file.path)];
     }
 
-    // Delete removed images from Cloudinary
     const removedImages = property.images.filter(img => !finalImages.includes(img));
     for (const url of removedImages) {
       try {
@@ -158,7 +166,6 @@ router.delete("/:id", authMiddleware, async (req, res) => {
 
     if (!property) return res.status(404).json({ message: "Property not found or not owned by user" });
 
-    // Delete images from Cloudinary
     for (const url of property.images) {
       try {
         const publicId = url.split("/").pop().split(".")[0];
@@ -170,6 +177,7 @@ router.delete("/:id", authMiddleware, async (req, res) => {
 
     res.json({ message: "Property deleted successfully" });
   } catch (err) {
+    console.error("❌ Delete Property Error:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
