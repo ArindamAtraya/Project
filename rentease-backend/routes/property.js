@@ -1,6 +1,6 @@
 // rentease-backend/routes/property.js
 import express from "express";
-import { authMiddleware } from "../middleware/authMiddleware.js"; // ✅ FIXED for named export
+import { authMiddleware } from "../middleware/authMiddleware.js"; // ✅ named export
 import Property from "../models/Property.js";
 import upload from "../middleware/upload.js";
 import { v2 as cloudinary } from "cloudinary";
@@ -20,18 +20,6 @@ router.get("/", async (req, res) => {
     res.json({ properties });
   } catch (err) {
     console.error("❌ Error in GET /:", err);
-    res.status(500).json({ message: "Server error", error: err.message });
-  }
-});
-
-// Get property by ID
-router.get("/:id", async (req, res) => {
-  try {
-    const property = await Property.findById(req.params.id);
-    if (!property) return res.status(404).json({ message: "Property not found" });
-    res.json({ property });
-  } catch (err) {
-    console.error("❌ Error in GET /:id:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
@@ -59,7 +47,7 @@ router.get("/my-properties", authMiddleware, async (req, res) => {
   }
 });
 
-// Add new property with Cloudinary images
+// Add new property
 router.post("/add-property", authMiddleware, upload.array("images", 5), async (req, res) => {
   try {
     const {
@@ -89,6 +77,30 @@ router.post("/add-property", authMiddleware, upload.array("images", 5), async (r
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
+
+/**
+ * ========================
+ * PUBLIC ROUTE (single property)
+ * ========================
+ */
+
+// Get property by ID — must be *after* /my-properties
+router.get("/:id", async (req, res) => {
+  try {
+    const property = await Property.findById(req.params.id);
+    if (!property) return res.status(404).json({ message: "Property not found" });
+    res.json({ property });
+  } catch (err) {
+    console.error("❌ Error in GET /:id:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+/**
+ * ========================
+ * UPDATE + DELETE
+ * ========================
+ */
 
 // Update property (images + amenities)
 router.put("/:id", authMiddleware, upload.array("images", 5), async (req, res) => {
@@ -158,7 +170,7 @@ router.put("/:id", authMiddleware, upload.array("images", 5), async (req, res) =
   }
 });
 
-// Delete property + images
+// Delete property
 router.delete("/:id", authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
