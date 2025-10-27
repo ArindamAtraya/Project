@@ -1,6 +1,6 @@
 // rentease-backend/routes/property.js
 import express from "express";
-import authMiddleware from "../middleware/authMiddleware.js"; // ✅ FIXED import (no destructure)
+import { authMiddleware } from "../middleware/authMiddleware.js"; // ✅ FIXED for named export
 import Property from "../models/Property.js";
 import upload from "../middleware/upload.js";
 import { v2 as cloudinary } from "cloudinary";
