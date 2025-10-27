@@ -11,26 +11,34 @@ dotenv.config();
 const app = express();
 const __dirname = path.resolve();
 
-// Logging middleware
+// 🧾 Logging middleware
 app.use((req, res, next) => {
   console.log(`📩 ${req.method} ${req.url}`);
   next();
 });
 
-// Middlewares
-app.use(cors());
-app.use(express.json());
+// ✅ Updated Middlewares
+app.use(
+  cors({
+    origin: "*", // Allow all origins (Render + localhost)
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
-// Serve frontend static files from "public" folder
+// ✅ Handle large JSON bodies and form data
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+// ✅ Serve static frontend files (Render serves from same app)
 app.use(express.static(path.join(__dirname, "public")));
 
-// API Routes
+// ✅ API Routes
 app.use("/api", authRoutes);
 app.use("/api/properties", propertyRoutes);
 
-// Catch-all route for frontend (non-API requests)
+// ✅ Catch-all route for frontend (non-API requests)
 app.get("*", (req, res) => {
-  // Only send frontend HTML if the request is NOT for /api
   if (!req.path.startsWith("/api")) {
     res.sendFile(path.join(__dirname, "public", "home.html"));
   } else {
@@ -38,15 +46,18 @@ app.get("*", (req, res) => {
   }
 });
 
-// Global Error Handler
+// ✅ Global Error Handler
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error("💥 Server Error:", err.stack);
   res.status(500).json({ message: "Server Error" });
 });
 
-// DB Connection and server start
+// ✅ Connect to DB and start server
 mongoose
-  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
     console.log("✅ MongoDB Connected");
     const PORT = process.env.PORT || 4000;

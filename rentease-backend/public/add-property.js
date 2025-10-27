@@ -12,9 +12,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Determine backend URL (local or live)
-    const API_BASE = window.location.hostname.includes("localhost")
-      ? "http://localhost:4000"
-      : "https://rentease-backend.onrender.com"; // 🔗 change if your Render backend URL differs
+    // const API_BASE = window.location.hostname.includes("localhost")
+    //   ? "http://localhost:4000"
+    //   : "https://mynest-sr8f.onrender.com"; 
+      const API_BASE = window.location.hostname.includes("localhost")
+    ? "http://localhost:4000"
+    : window.location.origin; 
 
     // Collect form data
     const formData = new FormData(form);
