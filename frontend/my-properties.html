@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Properties | MyNest</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Mobile menu styles */
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 1.2em;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .menu-toggle:hover {
+      background: #4338ca;
+      transform: scale(1.05);
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 998;
+    }
+
+    .sidebar-overlay.active {
+      display: block;
+    }
+
+    /* Enhanced sidebar styling */
+    .sidebar {
+      width: 280px;
+      min-height: 100vh;
+      padding: 20px;
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 999;
+      transition: transform 0.3s ease;
+    }
+
+    /* Enhanced logo styling */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .logo-img {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+
+    .brand-name {
+      margin: 0;
+      font-size: 20px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .brand-tagline {
+      font-size: 12px;
+      color: #94a3b8;
+      margin: 0;
+    }
+
+    /* Enhanced navigation styling */
+    .nav-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin-bottom: 16px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 20px;
+    }
+
+    nav ul li {
+      margin: 4px 0;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #cbd5e1;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      transform: translateX(4px);
+    }
+
+    nav ul li a.active {
+      background: #4f46e5;
+      color: white;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    }
+
+    /* Enhanced stats styling */
+    .stats-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin: 24px 0 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .stats p {
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #cbd5e1;
+      margin: 8px 0;
+    }
+
+    .stats a {
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .stats a:hover {
+      color: white;
+      text-decoration: underline;
+    }
+
+    .highlight {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .highlight.blue {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .highlight.green {
+      background: #10b981;
+      color: white;
+    }
+
+    /* Enhanced welcome box */
+    .welcome {
+      margin-top: auto;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 16px;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+    }
+
+    .welcome-title {
+      color: white;
+      font-weight: 600;
+      margin: 0 0 4px 0;
+      font-size: 14px;
+    }
+
+    .welcome-sub {
+      color: #94a3b8;
+      margin: 0;
+      font-size: 12px;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #10b981, #3b82f6);
+      border-radius: 50%;
+      margin-bottom: 12px;
+    }
+
+    /* Main content adjustment */
+    main {
+      margin-left: 280px;
+      transition: margin-left 0.3s ease;
+    }
+
+    /* Responsive design */
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 260px;
+      }
+      main {
+        margin-left: 260px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+      
+      .sidebar {
+        transform: translateX(-100%);
+        width: 300px;
+      }
+      
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      
+      main {
+        margin-left: 0 !important;
+        width: 100%;
+        padding: 70px 15px 20px;
+      }
+    }
+
+    /* Property cards responsive design */
+    @media (max-width: 640px) {
+      #properties-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (min-width: 641px) and (max-width: 1024px) {
+      #properties-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1025px) {
+      #properties-container {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-100 flex">
+
+  <!-- Mobile Menu Toggle -->
+  <button class="menu-toggle" id="menuToggle">☰</button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Enhanced Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <!-- Logo Section -->
+    <div class="logo">
+      <img src="logo.png" alt="MyNest Logo" class="logo-img">
+      <div>
+        <h3 class="brand-name">MyNest</h3>
+        <p class="brand-tagline">Find Your Perfect Home</p>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+      <p class="nav-title">Navigation</p>
+      <ul>
+        <li><a href="home.html"><span class="icon">🔍</span> Search Properties</a></li>
+        <li><a href="add-property.html"><span class="icon">➕</span> Add Property</a></li>
+        <li><a href="my-properties.html" class="active"><span class="icon">📋</span> My Properties</a></li>
+        <li><a href="add-homestay.html"><span class="icon">🏡</span> Add Homestay</a></li>
+        <li><a href="signup.html" id="signup-link"><span class="icon">📝</span> Sign Up</a></li>
+        <li><a href="login.html" id="login-link"><span class="icon">🔑</span> Login</a></li>
+      </ul>
+    </nav>
+
+    <!-- Contact Us -->
+    <div class="stats">
+      <p class="stats-title">Contact Us</p>
+      <p>
+        <span class="icon">💼</span> 
+        <a href="https://www.linkedin.com/company/mynest21/" target="_blank">LinkedIn</a>
+      </p>
+      <p>
+        <span class="icon">📘</span> 
+        <a href="https://www.facebook.com/share/1ABpLQP4mx/" target="_blank">Facebook</a>
+      </p>
+      <p>
+        <span class="icon">📷</span> 
+        <a href="https://www.instagram.com/the_my_nest?igsh=MWNzZ283Z3lwNHFzaA==" target="_blank">Instagram</a>
+      </p>
+    </div>
+
+    <!-- Welcome Box -->
+    <div class="welcome">
+      <div class="avatar"></div>
+      <div>
+        <p class="welcome-title" id="welcome-username">Welcome to MyNest</p>
+        <p class="welcome-sub">Manage your properties</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Section -->
+  <main class="flex-1 p-6">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-3xl font-semibold text-gray-800 mb-6">📌 My Properties</h2>
+
+      <!-- Property Cards Container -->
+      <div id="properties-container"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- JS will inject cards here -->
+      </div>
+    </div>
+  </main>
+
+  <!-- 👋 Username Display (Bottom-Right Corner) -->
+  <div id="user-greeting" class="fixed bottom-4 right-4 bg-white shadow-md rounded-full px-4 py-2 text-gray-700 font-medium hidden">
+    👋 <span id="user-name-display"></span>
+  </div>
+
+  <!-- Edit Modal -->
+  <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-3xl p-6 relative overflow-y-auto max-h-[90vh]">
+      <button id="closeModal" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">✖</button>
+      <h2 class="text-xl font-semibold mb-4 text-gray-800">Edit Property</h2>
+
+      <form id="editForm" class="space-y-4">
+
+        <input type="text" name="title" placeholder="Property Title"
+          class="w-full border p-2 rounded" required />
+
+        <!-- FIXED: Updated property type dropdown -->
+        <select name="type" class="w-full border p-2 rounded" required>
+          <option value="">Select Type</option>
+          <option value="PG">PG</option>
+          <option value="Flat">Flat</option>
+          <option value="Apartment">Rent House</option>
+          <option value="1BHK">1BHK Homestay</option>
+          <option value="2BHK">2BHK Homestay</option>
+          <option value="3BHK">3BHK Homestay</option>
+          <option value="Bungalow">Bungalow Homestay</option>
+        </select>
+
+        <input type="text" name="location" placeholder="Location"
+          class="w-full border p-2 rounded" required />
+
+        <div class="grid grid-cols-2 gap-4">
+          <input type="number" name="price" placeholder="Price (₹)" class="border p-2 rounded" required />
+          <input type="number" name="deposit" placeholder="Deposit (₹)" class="border p-2 rounded" />
+        </div>
+
+        <textarea name="description" placeholder="Description"
+          class="w-full border p-2 rounded"></textarea>
+
+        <div class="grid grid-cols-3 gap-4">
+          <input type="number" name="beds" placeholder="Beds" class="border p-2 rounded" />
+          <input type="number" name="baths" placeholder="Baths" class="border p-2 rounded" />
+          <input type="text" name="sqFt" placeholder="SqFt" class="border p-2 rounded" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <select name="gender" class="border p-2 rounded">
+            <option value="Any">Any</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Family">Family</option>
+          </select>
+          <select name="furnishing" class="border p-2 rounded">
+            <option value="">Select Furnishing</option>
+            <option value="Furnished">Furnished</option>
+            <option value="Semi-Furnished">Semi-Furnished</option>
+            <option value="Unfurnished">Unfurnished</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <input type="text" name="phone" placeholder="Phone" class="border p-2 rounded" />
+        </div>
+
+        <div>
+          <label class="font-semibold">Amenities:</label>
+          <div class="grid grid-cols-2 gap-2 mt-2">
+            <label><input type="checkbox" name="amenities" value="WiFi"> WiFi</label>
+            <label><input type="checkbox" name="amenities" value="Parking"> Parking</label>
+            <label><input type="checkbox" name="amenities" value="AC"> AC</label>
+            <label><input type="checkbox" name="amenities" value="TV"> TV</label>
+            <label><input type="checkbox" name="amenities" value="Fridge"> Fridge</label>
+            <label><input type="checkbox" name="amenities" value="Washing Machine"> Washing Machine</label>
+          </div>
+        </div>
+
+        <label class="block">Update Images:</label>
+        <input type="file" name="images" multiple class="w-full border p-2 rounded" />
+        <div id="imagePreview" class="flex flex-wrap gap-2 mt-2"></div>
+
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
+          Save Changes
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Mobile menu functionality
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    if (menuToggle && sidebar) {
+      menuToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('active');
+        sidebarOverlay.classList.toggle('active');
+      });
+
+      sidebarOverlay.addEventListener('click', function() {
+        sidebar.classList.remove('active');
+        sidebarOverlay.classList.remove('active');
+      });
+    }
+
+    // Close sidebar when clicking on nav links (mobile)
+    const navLinks = document.querySelectorAll('.nav a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        if (window.innerWidth <= 768) {
+          sidebar.classList.remove('active');
+          sidebarOverlay.classList.remove('active');
+        }
+      });
+    });
+
+    // Handle window resize
+    function handleResize() {
+      if (window.innerWidth > 768) {
+        sidebar.classList.remove('active');
+        sidebarOverlay.classList.remove('active');
+      }
+    }
+
+    window.addEventListener('resize', handleResize);
+
+    // User authentication and logout functionality
+    const token = localStorage.getItem("token");
+    const userName = localStorage.getItem("userName");
+
+    if (!token) {
+      alert("⚠️ Please login to view your properties.");
+      window.location.href = "login.html";
+    } else {
+      const loginLink = document.getElementById("login-link");
+      const signupLink = document.getElementById("signup-link");
+      
+      if (loginLink) loginLink.style.display = "none";
+      if (signupLink) signupLink.style.display = "none";
+
+      // Add logout button
+      const nav = document.querySelector('.nav ul');
+      const logoutItem = document.createElement("li");
+      logoutItem.innerHTML = `<a href="#" id="logout-link" class="flex items-center space-x-3 p-3 rounded-xl text-red-400 hover:bg-red-600 hover:text-white transition-all duration-200"><span class="icon">🚪</span> Logout</a>`;
+      nav.appendChild(logoutItem);
+
+      document.getElementById("logout-link").addEventListener("click", (e) => {
+        e.preventDefault();
+        localStorage.removeItem("token");
+        localStorage.removeItem("userName");
+        window.location.href = "login.html";
+      });
+
+      const greetingDiv = document.getElementById("user-greeting");
+      const userNameDisplay = document.getElementById("user-name-display");
+      const welcomeUser = document.getElementById("welcome-username");
+
+      if (userNameDisplay) userNameDisplay.textContent = userName || "User";
+      if (welcomeUser) welcomeUser.textContent = `Welcome, ${userName || "User"}`;
+
+      if (greetingDiv) greetingDiv.classList.remove("hidden");
+    }
+  </script>
+
+  <script src="my-properties.js"></script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+/* property-details.css
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f6fa;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.back-button {
+    display: inline-block;
+    margin: 20px;
+    text-decoration: none;
+    color: #007bff;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.back-button:hover {
+    text-decoration: underline;
+}
+
+.property-image img {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid #ddd;
+}
+
+.property-content {
+    padding: 20px 30px;
+}
+
+.property-content h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.property-location {
+    color: #777;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.property-price {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.details {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.details div {
+    font-size: 14px;
+    color: #555;
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 6px;
+    flex: 1;
+    text-align: center;
+}
+
+.furnishing {
+    background-color: #eaf4ff;
+    color: #007bff;
+}
+
+.amenities {
+    margin-top: 20px;
+}
+
+.amenities h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.amenities-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.amenities-list span {
+    background-color: #f1f1f1;
+    color: #555;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+.contact-btns {
+    display: flex;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.contact-btns button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.contact-btns .call-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.contact-btns .call-btn:hover {
+    background-color: #218838;
+}
+
+.contact-btns .inquire-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+.contact-btns .inquire-btn:hover {
+    background-color: #0069d9;
+} */

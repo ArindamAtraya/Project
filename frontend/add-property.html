@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Property - MyNest</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Mobile menu styles */
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 1.2em;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .menu-toggle:hover {
+      background: #4338ca;
+      transform: scale(1.05);
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 998;
+    }
+
+    .sidebar-overlay.active {
+      display: block;
+    }
+
+    /* Sidebar styling */
+    .sidebar {
+      width: 280px;
+      min-height: 100vh;
+      padding: 20px;
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 999;
+      transition: transform 0.3s ease;
+    }
+
+    /* Main content area */
+    main {
+      margin-left: 280px;
+      transition: margin-left 0.3s ease;
+    }
+
+    /* Responsive design */
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 260px;
+      }
+      main {
+        margin-left: 260px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+      
+      .sidebar {
+        transform: translateX(-100%);
+        width: 300px;
+      }
+      
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      
+      main {
+        margin-left: 0 !important;
+        width: 100%;
+      }
+    }
+
+    /* Enhanced form styling */
+    .input {
+      border: 2px solid #e2e8f0;
+      padding: 14px 16px;
+      border-radius: 10px;
+      width: 100%;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .input:focus {
+      outline: none;
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .input:hover {
+      border-color: #cbd5e1;
+    }
+
+    /* Checkbox styling */
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-right: 12px;
+      border-radius: 6px;
+      border: 2px solid #d1d5db;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    input[type="checkbox"]:checked {
+      background-color: #4f46e5;
+      border-color: #4f46e5;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      cursor: pointer;
+      font-weight: 500;
+      color: #374151;
+      transition: color 0.2s ease;
+    }
+
+    label:hover {
+      color: #4f46e5;
+    }
+
+    /* Card styling */
+    .form-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      border: 1px solid #f1f5f9;
+    }
+
+    /* Section headers */
+    .section-header {
+      color: #1f2937;
+      font-weight: 600;
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid #f3f4f6;
+      position: relative;
+    }
+
+    .section-header::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, #4f46e5, #7c3aed);
+      border-radius: 2px;
+    }
+
+    /* Submit button */
+    .submit-btn {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: white;
+      padding: 16px 24px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Image preview */
+    .image-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .preview-img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+
+    .preview-img:hover {
+      transform: scale(1.05);
+      border-color: #4f46e5;
+    }
+
+    /* File input styling */
+    .file-input {
+      border: 2px dashed #d1d5db;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      transition: all 0.3s ease;
+      background: #fafafa;
+    }
+
+    .file-input:hover {
+      border-color: #4f46e5;
+      background: #f8faff;
+    }
+
+    /* User greeting */
+    .user-greeting {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: white;
+      box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+
+  <!-- Mobile Menu Toggle -->
+  <button class="menu-toggle" id="menuToggle">☰</button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <!-- Logo Section -->
+    <div class="logo mb-8">
+      <div class="flex items-center space-x-3">
+        <img src="logo.png" alt="MyNest Logo" class="w-12 h-12 rounded-xl object-cover">
+        <div>
+          <h3 class="brand-name text-white text-xl font-bold">MyNest</h3>
+          <p class="brand-tagline text-blue-200 text-sm">Find Your Perfect Home</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav mb-8">
+      <p class="nav-title text-blue-200 text-sm font-semibold uppercase tracking-wider mb-4">Navigation</p>
+      <ul class="space-y-2">
+        <li><a href="home.html" class="flex items-center space-x-3 p-3 rounded-xl text-blue-100 hover:bg-blue-700 hover:text-white transition-all duration-200"><span class="icon">🔍</span> <span>Search Properties</span></a></li>
+        <li><a href="add-property.html" class="flex items-center space-x-3 p-3 rounded-xl bg-blue-600 text-white shadow-lg transition-all duration-200"><span class="icon">➕</span> <span>Add Property</span></a></li>
+        <li><a href="my-properties.html" class="flex items-center space-x-3 p-3 rounded-xl text-blue-100 hover:bg-blue-700 hover:text-white transition-all duration-200"><span class="icon">📋</span> <span>My Properties</span></a></li>
+        <li><a href="add-homestay.html" class="flex items-center space-x-3 p-3 rounded-xl text-blue-100 hover:bg-blue-700 hover:text-white transition-all duration-200"><span class="icon">🏡</span> <span>Add Homestay</span></a></li>
+        <!-- Login/Signup links that will be hidden when user is logged in -->
+        <li><a href="signup.html" id="signup-link" class="flex items-center space-x-3 p-3 rounded-xl text-blue-100 hover:bg-blue-700 hover:text-white transition-all duration-200"><span class="icon">📝</span> <span>Sign Up</span></a></li>
+        <li><a href="login.html" id="login-link" class="flex items-center space-x-3 p-3 rounded-xl text-blue-100 hover:bg-blue-700 hover:text-white transition-all duration-200"><span class="icon">🔑</span> <span>Login</span></a></li>
+        <!-- Logout link will be dynamically added here when user is logged in -->
+      </ul>
+    </nav>
+
+    <!-- Contact Us -->
+    <div class="stats mb-8">
+      <p class="stats-title text-blue-200 text-sm font-semibold uppercase tracking-wider mb-4">Contact Us</p>
+      <div class="space-y-3">
+        <p class="flex items-center justify-between text-blue-100">
+          <span class="flex items-center space-x-2">
+            <span class="icon">💼</span> 
+            <a href="https://www.linkedin.com/company/mynest21/" target="_blank" class="text-blue-100 hover:text-white transition-colors">LinkedIn</a>
+          </span>
+        </p>
+        <p class="flex items-center justify-between text-blue-100">
+          <span class="flex items-center space-x-2">
+            <span class="icon">📘</span> 
+            <a href="https://www.facebook.com/share/1ABpLQP4mx/" target="_blank" class="text-blue-100 hover:text-white transition-colors">Facebook</a>
+          </span>
+        </p>
+        <p class="flex items-center justify-between text-blue-100">
+          <span class="flex items-center space-x-2">
+            <span class="icon">📷</span> 
+            <a href="https://www.instagram.com/the_my_nest?igsh=MWNzZ283Z3lwNHFzaA==" target="_blank" class="text-blue-100 hover:text-white transition-colors">Instagram</a>
+          </span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Welcome Box -->
+    <div class="welcome mt-auto">
+      <div class="bg-blue-700 rounded-2xl p-4">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+            <span id="user-initial">U</span>
+          </div>
+          <div>
+            <p class="welcome-title text-white font-semibold" id="welcome-username">Welcome, User</p>
+            <p class="welcome-sub text-blue-200 text-sm">Ready to list your property</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6">
+    <div class="max-w-4xl mx-auto">
+      <!-- Header -->
+      <div class="mb-8 text-center">
+        <h1 class="text-4xl font-bold text-gray-800 mb-3">Add Your Property</h1>
+        <p class="text-lg text-gray-600">List your property and reach thousands of potential tenants</p>
+      </div>
+
+      <!-- Form Card -->
+      <div class="form-card p-8">
+        <form id="propertyForm" enctype="multipart/form-data" class="space-y-8">
+          
+          <!-- Basic Information -->
+          <div>
+            <h3 class="section-header">Basic Information</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Property Title *</label>
+                <input type="text" name="title" placeholder="e.g., Spacious 2BHK in Koramangala" required class="input">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Property Type *</label>
+                <select name="type" required class="input">
+                  <option value="">Select Property Type</option>
+                  <option>PG</option>
+                  <option>Flat</option>
+                  <option>Rent House</option>
+                  <option>Villa</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Location/Area *</label>
+                <input type="text" name="location" placeholder="e.g., Koramangala 5th Block" required class="input">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">City *</label>
+                <input type="text" name="city" placeholder="e.g., Bangalore" required class="input">
+              </div>
+            </div>
+            <div class="mt-6">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Full Address</label>
+              <textarea name="address" placeholder="Enter complete address with landmarks..." class="input w-full" rows="3"></textarea>
+            </div>
+          </div>
+
+          <!-- Pricing & Details -->
+          <div>
+            <h3 class="section-header">Pricing & Property Details</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Monthly Rent (₹) *</label>
+                <input type="number" name="price" placeholder="15000" required class="input">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Security Deposit (₹)</label>
+                <input type="number" name="deposit" placeholder="30000" class="input">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Area (Sq Ft)</label>
+                <input type="number" name="sqFt" placeholder="1200" class="input">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Bedrooms</label>
+                <input type="number" name="beds" placeholder="2" class="input">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Bathrooms</label>
+                <input type="number" name="baths" placeholder="2" class="input">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Furnishing Status</label>
+                <select name="furnishing" class="input">
+                  <option value="">Select Furnishing</option>
+                  <option>Fully Furnished</option>
+                  <option>Semi Furnished</option>
+                  <option>Unfurnished</option>
+                </select>
+              </div>
+            </div>
+            <div class="mt-6">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Gender Preference</label>
+              <select name="gender" class="input">
+                <option value="">Any Gender</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Family</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Amenities -->
+          <div>
+            <h3 class="section-header">Amenities & Features</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <label><input type="checkbox" name="amenities" value="WiFi"> WiFi</label>
+              <label><input type="checkbox" name="amenities" value="Parking"> Parking</label>
+              <label><input type="checkbox" name="amenities" value="Air Conditioning"> Air Conditioning</label>
+              <label><input type="checkbox" name="amenities" value="Gym"> Gym</label>
+              <label><input type="checkbox" name="amenities" value="Food Included"> Food Included</label>
+              <label><input type="checkbox" name="amenities" value="Laundry Service"> Laundry Service</label>
+              <label><input type="checkbox" name="amenities" value="Security"> 24/7 Security</label>
+              <label><input type="checkbox" name="amenities" value="Power Backup"> Power Backup</label>
+              <label><input type="checkbox" name="amenities" value="Water Supply"> 24/7 Water Supply</label>
+            </div>
+          </div>
+
+          <!-- Images -->
+          <div>
+            <h3 class="section-header">Property Photos</h3>
+            <div class="file-input">
+              <input type="file" name="images" id="images" multiple accept="image/*" class="block w-full">
+              <p class="text-gray-500 mt-2 text-sm">Click to upload or drag and drop</p>
+              <p class="text-gray-400 text-xs">PNG, JPG, JPEG up to 5MB each</p>
+            </div>
+            <div id="preview" class="image-preview"></div>
+          </div>
+
+          <!-- Description & Contact -->
+          <div>
+            <h3 class="section-header">Description & Contact</h3>
+            <div class="space-y-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Property Description</label>
+                <textarea name="description" placeholder="Describe your property features, nearby amenities, and why it's a great place to live..." class="input w-full" rows="4"></textarea>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Contact Number *</label>
+                <input type="text" name="phone" placeholder="Enter your 10-digit mobile number" required class="input">
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn w-full">
+            🏠 Publish Property
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- User Greeting -->
+  <div id="user-greeting" class="user-greeting fixed bottom-6 right-6 px-6 py-3 rounded-full text-white font-medium shadow-lg hidden">
+    👋 <span id="userNameDisplay"></span>
+  </div>
+
+  <script>
+    // Mobile menu functionality
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    if (menuToggle && sidebar) {
+      menuToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('active');
+        sidebarOverlay.classList.toggle('active');
+      });
+
+      sidebarOverlay.addEventListener('click', function() {
+        sidebar.classList.remove('active');
+        sidebarOverlay.classList.remove('active');
+      });
+    }
+
+    // Close sidebar when clicking on nav links (mobile)
+    const navLinks = document.querySelectorAll('.nav a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        if (window.innerWidth <= 768) {
+          sidebar.classList.remove('active');
+          sidebarOverlay.classList.remove('active');
+        }
+      });
+    });
+
+    // Handle window resize
+    function handleResize() {
+      if (window.innerWidth > 768) {
+        sidebar.classList.remove('active');
+        sidebarOverlay.classList.remove('active');
+      }
+    }
+
+    window.addEventListener('resize', handleResize);
+
+    // Image preview functionality
+    document.getElementById("images").addEventListener("change", function() {
+      const preview = document.getElementById("preview");
+      preview.innerHTML = "";
+      
+      Array.from(this.files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          img.className = "preview-img";
+          preview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    // Login protection and greeting
+    const token = localStorage.getItem("token");
+    const userName = localStorage.getItem("userName");
+
+    if (!token) {
+      alert("⚠️ You must be logged in to add a property.");
+      window.location.href = "login.html";
+    } else {
+      const loginLink = document.getElementById("login-link");
+      const signupLink = document.getElementById("signup-link");
+      
+      if (loginLink) loginLink.style.display = "none";
+      if (signupLink) signupLink.style.display = "none";
+
+      // Add logout button
+      const nav = document.querySelector('.nav ul');
+      const logoutItem = document.createElement("li");
+      logoutItem.innerHTML = `<a href="#" id="logout-link" class="flex items-center space-x-3 p-3 rounded-xl text-red-400 hover:bg-red-600 hover:text-white transition-all duration-200"><span class="icon">🚪</span> Logout</a>`;
+      nav.appendChild(logoutItem);
+
+      document.getElementById("logout-link").addEventListener("click", (e) => {
+        e.preventDefault();
+        localStorage.removeItem("token");
+        localStorage.removeItem("userName");
+        window.location.href = "login.html";
+      });
+
+      const greetingDiv = document.getElementById("user-greeting");
+      const userNameDisplay = document.getElementById("userNameDisplay");
+      const welcomeUser = document.getElementById("welcome-username");
+      const userInitial = document.getElementById("user-initial");
+
+      if (userNameDisplay) userNameDisplay.textContent = userName || "User";
+      if (welcomeUser) welcomeUser.textContent = `Welcome, ${userName || "User"}`;
+      if (userInitial && userName) userInitial.textContent = userName.charAt(0).toUpperCase();
+
+      if (greetingDiv) greetingDiv.classList.remove("hidden");
+    }
+  </script>
+
+  <script src="add-property.js"></script>
+</body>
+</html>

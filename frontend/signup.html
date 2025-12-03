@@ -1,0 +1,58 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up | MyNest</title>
+  <link rel="stylesheet" href="test.css">
+  <script defer src="signup.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <a href="home.html" class="back-button">← Back</a>
+    <main class="content">
+      <div class="auth-container">
+        <div class="auth-card">
+          <h2>Create Account</h2>
+
+          <form id="signupForm">
+            <div class="form-group">
+              <label for="signupName">Full Name</label>
+              <input type="text" id="signupName" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-group">
+              <label for="signupEmail">Email Address</label>
+              <input type="email" id="signupEmail" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+              <label for="signupPassword">Password</label>
+              <input type="password" id="signupPassword" placeholder="Create a password" required minlength="6">
+            </div>
+
+            <div class="form-group">
+              <label for="signupConfirmPassword">Confirm Password</label>
+              <input type="password" id="signupConfirmPassword" placeholder="Confirm your password" required>
+            </div>
+
+            <button type="button" id="sendOtpBtn" class="btn-primary">Send OTP</button>
+
+            <div class="form-group otp-group" style="display:none;">
+              <label for="signupOtp">Enter OTP</label>
+              <input type="text" id="signupOtp" placeholder="Enter 6-digit OTP" maxlength="6" pattern="[0-9]{6}">
+              <small class="otp-hint">Check your email for the OTP code</small>
+            </div>
+
+            <button type="submit" class="btn-primary" id="signupBtn" style="display:none;">Verify & Create Account</button>
+          </form>
+
+          <p class="auth-footer">
+            Already have an account? <a href="login.html">Login here</a>
+          </p>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

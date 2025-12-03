@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MyNest</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Mobile Menu Toggle -->
+  <button class="menu-toggle" id="menuToggle">☰</button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <!-- Logo Section -->
+      <div class="logo">
+        <img src="logo.png" alt="MyNest Logo" class="logo-img">
+        <div>
+          <h3 class="brand-name">MyNest</h3>
+          <p class="brand-tagline">Find Your Perfect Home</p>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="nav">
+        <p class="nav-title">Navigation</p>
+        <ul>
+          <li><a href="home.html" class="active"><span class="icon">🔍</span> Search Properties</a></li>
+          <li><a href="add-property.html"><span class="icon">➕</span> Add Property</a></li>
+          <li><a href="my-properties.html"><span class="icon">📋</span> My Properties</a></li>
+          <li><a href="add-homestay.html"><span class="icon">🏡</span> Add Homestay</a></li>
+          <li><a href="signup.html" id="signup-link"><span class="icon">📝</span> Sign Up</a></li>
+          <li><a href="login.html" id="login-link"><span class="icon">🔑</span> Login</a></li>
+        </ul>
+      </nav>
+
+      <!-- Quick Stats -->
+      <div class="stats">
+        <p class="stats-title">Quick Stats</p>
+        <p><span class="icon">📍</span> Active Cities <span class="highlight blue">25+</span></p>
+        <p><span class="icon">🏢</span> Listed Properties <span class="highlight green">1000+</span></p>
+      </div>
+
+      <!-- Welcome Box -->
+      <div class="welcome">
+        <div class="avatar"></div>
+        <div>
+          <p class="welcome-title" id="welcome-username"></p>
+          <p class="welcome-sub"></p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <!-- Hero Section -->
+      <section class="hero">
+        <h1>Find Your Perfect Home</h1>
+        <p>Discover amazing PGs, Homestay's, and Rental properties in your preferred location</p>
+
+        <div class="search-box">
+          <input id="search-input" type="text" placeholder="Search by city, area, or property name..." readonly />
+          <button id="search-btn">Search</button>
+        </div>
+
+        <!-- Quick Filter Options - Now below search bar -->
+        <div class="quick-filters">
+          <button type="button" class="filter-option" data-type="pg">PG</button>
+          <button type="button" class="filter-option" data-type="apartment">RENT</button>
+          <button type="button" class="filter-option" data-type="flat">FLAT</button>
+          <button type="button" class="filter-option" data-type="villa">HOMESTAY</button>
+        </div>
+
+        <!-- Popup Modal for Advanced Search -->
+        <div id="searchModal" class="modal">
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Search Properties</h2>
+        
+            <form id="searchForm">
+              <label for="searchInput">City, Area, or Property Name </label>
+              <input type="text" id="searchInput" placeholder="City, Area, or Property Name" required>
+        
+              <label for="propertyType">Property Type</label>
+              <select id="propertyType">
+                <option value="any">Any</option>
+                <option value="pg">PG's</option>
+                <option value="apartment">Rental Apartment</option>
+                <option value="flat">Flat</option>
+                <option value="villa">Homestay's</option>
+              </select>
+        
+              <button type="submit" class="btn-gradient">Search</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- Properties -->
+      <section class="properties">
+        <h2 id="properties-count">5 Properties Found</h2>
+        <div class="cards" id="property-list">
+          <!-- Property cards will be inserted here using JavaScript -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

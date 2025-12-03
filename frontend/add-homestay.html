@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Homestay | MyNest</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+      
+      body {
+        background-color: #f5f7fa;
+        color: #333;
+        line-height: 1.6;
+      }
+      
+      /* --- Header and Navigation --- */
+      .container {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .sidebar {
+        width: 260px;
+        background: #fff;
+        height: 100vh;
+        padding: 20px;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+        position: fixed;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.3s ease;
+        z-index: 1000;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      
+      .brand-name {
+        margin: 0;
+        color: #111827;
+        font-weight: 700;
+      }
+      
+      .brand-tagline {
+        font-size: 12px;
+        color: #6b7280;
+        margin: 0;
+      }
+
+      nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      
+      nav ul li {
+        margin-bottom: 10px;
+      }
+
+      nav ul li a {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        text-decoration: none;
+        color: #374151;
+        border-radius: 8px;
+        transition: 0.2s;
+        font-weight: 500;
+      }
+
+      nav ul li a.active,
+      nav ul li a:hover {
+        background-color: #eff6ff;
+        color: #2563eb;
+      }
+
+      #logout-link {
+        color: #dc2626;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border-radius: 8px;
+      }
+
+      #logout-link:hover {
+        background: #fee2e2;
+      }
+
+      .stats {
+        font-size: 14px;
+        color: #374151;
+        margin-top: 20px;
+      }
+      
+      .stats a {
+        color: #374151;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+      
+      .stats a:hover {
+        color: #2563eb;
+        text-decoration: underline;
+      }
+      
+      .highlight {
+        font-weight: 700;
+      }
+      
+      .highlight.blue {
+        color: #2563eb;
+      }
+      
+      .highlight.green {
+        color: #16a34a;
+      }
+
+      /* --- Main content --- */
+      .main {
+        flex-grow: 1;
+        margin-left: 280px;
+        padding: 40px;
+        overflow-y: auto;
+        transition: margin-left 0.3s ease;
+      }
+
+      /* --- Hero Section --- */
+      .hero {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: linear-gradient(135deg, #3498db, #8e44ad);
+        color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+      
+      .hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+      }
+      
+      .hero p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+      }
+
+      /* --- Form styling --- */
+      .homestay-form-container {
+        background: #fff;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        max-width: 800px;
+        margin: 20px auto;
+      }
+
+      .form-section {
+        margin-bottom: 30px;
+      }
+      
+      .section-title {
+        font-size: 1.5rem;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #f0f0f0;
+        display: flex;
+        align-items: center;
+      }
+      
+      .section-title i {
+        margin-right: 10px;
+        color: #3498db;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+      
+      .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #333;
+      }
+
+      .required::after {
+        content: " *";
+        color: #e74c3c;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: border-color 0.3s;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+      }
+
+      .amenities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 12px;
+      }
+
+      .amenity-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .amenity-checkbox:hover {
+        background: #f3f4f6;
+      }
+      
+      .amenity-checkbox input[type="checkbox"] {
+        accent-color: #2563eb;
+      }
+
+      .submit-btn {
+        background: #2563eb;
+        color: white;
+        padding: 14px 30px;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        transition: all 0.3s;
+      }
+
+      .submit-btn:hover {
+        background: #1d4ed8;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+      }
+
+      .info-box {
+        background: #eff6ff;
+        border-left: 4px solid #2563eb;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+      }
+
+      .info-box h3 {
+        margin: 0 0 8px;
+        color: #1e40af;
+        font-size: 16px;
+      }
+      
+      .info-box p {
+        margin: 0;
+        color: #1e40af;
+        font-size: 14px;
+      }
+
+      .help-text {
+        font-size: 0.85rem;
+        color: #7f8c8d;
+        margin-top: 5px;
+      }
+
+      /* --- Bottom right username box --- */
+      .user-box {
+        position: fixed;
+        bottom: 20px;
+        right: 30px;
+        background: #f3f4f6;
+        border-radius: 25px;
+        padding: 10px 18px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        font-weight: 100;
+        color: #374151;
+        z-index: 100;
+      }
+      
+      .user-box span {
+        color: #000000;
+      }
+
+      /* --- Hamburger Menu --- */
+      .hamburger-menu {
+        display: none;
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1100;
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 12px;
+        cursor: pointer;
+        font-size: 1.2rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      /* --- Responsive Design --- */
+      @media (max-width: 1024px) {
+        .sidebar {
+          transform: translateX(-100%);
+        }
+        
+        .sidebar.active {
+          transform: translateX(0);
+        }
+        
+        .main {
+          margin-left: 0;
+          padding: 40px 20px;
+        }
+        
+        .hamburger-menu {
+          display: block;
+        }
+        
+        .overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 999;
+          display: none;
+        }
+        
+        .overlay.active {
+          display: block;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .form-row, .pricing-row {
+          flex-direction: column;
+          gap: 0;
+        }
+        
+        .amenities-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        
+        .hero h1 {
+          font-size: 2rem;
+        }
+        
+        .hero p {
+          font-size: 1rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .amenities-grid {
+          grid-template-columns: 1fr;
+        }
+        
+        .hero h1 {
+          font-size: 1.8rem;
+        }
+        
+        .homestay-form-container {
+          padding: 20px;
+        }
+        
+        .main {
+          padding: 20px 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Hamburger Menu Button -->
+    <button class="hamburger-menu" id="hamburger-menu">
+      <i class="fas fa-bars"></i>
+    </button>
+    
+    <!-- Overlay for mobile menu -->
+    <div class="overlay" id="overlay"></div>
+
+    <div class="container">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div>
+          <div class="logo">
+            <img src="logo.png" alt="MyNest Logo" class="logo-img" width="40" />
+            <div>
+              <h3 class="brand-name">MyNest</h3>
+              <p class="brand-tagline">Find Your Perfect Home</p>
+            </div>
+          </div>
+
+          <nav class="nav">
+            <p class="nav-title">Navigation</p>
+            <ul>
+              <li>
+                <a href="home.html"
+                  ><span class="icon"><i class="fas fa-search"></i></span> Search Properties</a
+                >
+              </li>
+              <li>
+                <a href="add-property.html"
+                  ><span class="icon"><i class="fas fa-plus"></i></span> Add Property</a
+                >
+              </li>
+              <li>
+                <a href="my-properties.html"
+                  ><span class="icon"><i class="fas fa-list"></i></span> My Properties</a
+                >
+              </li>
+              <li>
+                <a href="add-homestay.html" class="active"
+                  ><span class="icon"><i class="fas fa-home"></i></span> Add Homestay</a
+                >
+              </li>
+              <li>
+                <a href="#" id="logout-link"
+                  ><span class="icon"><i class="fas fa-sign-out-alt"></i></span> Logout</a
+                >
+              </li>
+            </ul>
+          </nav>
+
+          <!-- Contact Us -->
+          <div class="stats">
+            <p class="stats-title">Contact Us</p>
+            <p>
+              <span class="icon"><i class="fab fa-linkedin"></i></span> 
+              <a href="https://www.linkedin.com/company/mynest21/" target="_blank">LinkedIn</a>
+            </p>
+            <p>
+              <span class="icon"><i class="fab fa-facebook"></i></span> 
+              <a href="https://www.facebook.com/share/1ABpLQP4mx/" target="_blank">Facebook</a>
+            </p>
+            <p>
+              <span class="icon"><i class="fab fa-instagram"></i></span> 
+              <a href="https://www.instagram.com/the_my_nest?igsh=MWNzZ283Z3lwNHFzaA==" target="_blank">Instagram</a>
+            </p>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <main class="main">
+        <section class="hero">
+          <h1><i class="fas fa-home"></i> Add Homestay</h1>
+          <p>List your homestay and start welcoming guests</p>
+        </section>
+
+        <div class="homestay-form-container">
+          <div class="info-box">
+            <h3><i class="fas fa-info-circle"></i> Homestay Listing Information</h3>
+            <p>Fill in the details below to list your property.</p>
+          </div>
+
+          <form id="homestayForm" enctype="multipart/form-data">
+            <!-- Basic Information -->
+            <div class="form-section">
+              <h3 class="section-title">
+                <i class="fas fa-info-circle"></i>
+                Basic Information
+              </h3>
+              
+              <div class="form-group">
+                <label for="title" class="required">Homestay Name</label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  placeholder="e.g., Sunrise Villa, Cozy Mountain Retreat"
+                  required
+                />
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="location" class="required">Location</label>
+                  <input
+                    type="text"
+                    id="location"
+                    name="location"
+                    placeholder="City, Area"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="type" class="required">Property Type</label>
+                  <select id="type" name="type" required>
+                    <option value="1BHK">1BHK</option>
+                    <option value="2BHK">2BHK</option>
+                    <option value="3BHK">3BHK</option>
+                    <option value="Bungalow">Bungalow</option>
+                    <!--<option value="Flat">Flat</option>-->
+                  </select>
+                  <p class="help-text">If your property doesn't match any of these, please mention it in the Description field above.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pricing -->
+            <div class="form-section">
+              <h3 class="section-title">
+                <i class="fas fa-tag"></i>
+                Pricing
+              </h3>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="price" class="required">Price per Night (₹)</label>
+                  <input
+                    type="number"
+                    id="price"
+                    name="price"
+                    placeholder=""
+                    required
+                  />
+                  <p class="help-text">
+                    Set competitive pricing for your homestay
+                  </p>
+                </div>
+
+                <div class="form-group">
+                  <label for="deposit">Security Deposit (₹)</label>
+                  <input
+                    type="number"
+                    id="deposit"
+                    name="deposit"
+                    placeholder=""
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Property Details -->
+            <div class="form-section">
+              <h3 class="section-title">
+                <i class="fas fa-home"></i>
+                Property Details
+              </h3>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="beds" class="required">Bedrooms</label>
+                  <input
+                    type="number"
+                    id="beds"
+                    name="beds"
+                    placeholder=""
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="baths" class="required">Bathrooms</label>
+                  <input
+                    type="number"
+                    id="baths"
+                    name="baths"
+                    placeholder=""
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="sqFt">Area (sq ft)</label>
+                  <input type="text" id="sqFt" name="sqFt" placeholder="" />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="maxGuests" class="required">Maximum Guests</label>
+                  <input
+                    type="number"
+                    id="maxGuests"
+                    name="maxGuests"
+                    placeholder=""
+                    required
+                  />
+                </div>
+              </div>
+
+              <!-- Description -->
+              <div class="form-group">
+                <label for="description" class="required">Description</label>
+                <textarea
+                  id="description"
+                  name="description"
+                  rows="5"
+                  placeholder="Describe your homestay, nearby attractions, house rules, etc."
+                  required
+                ></textarea>
+              </div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="form-section">
+              <h3 class="section-title">
+                <i class="fas fa-address-book"></i>
+                Contact Information
+              </h3>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="phone" class="required">Phone Number</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    placeholder="Ph. No"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="whatsapp" class="required">WhatsApp Number</label>
+                  <input
+                    type="tel"
+                    id="whatsapp"
+                    name="whatsapp"
+                    placeholder="Whatsapp No"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Amenities -->
+            <div class="form-section">
+              <h3 class="section-title">
+                <i class="fas fa-concierge-bell"></i>
+                Amenities
+              </h3>
+              
+              <div class="amenities-grid">
+                <label class="amenity-checkbox"
+                  ><input type="checkbox" name="amenities" value="WiFi" /><span
+                    ><i class="fas fa-wifi"></i> WiFi</span
+                  ></label
+                >
+                <label class="amenity-checkbox"
+                  ><input type="checkbox" name="amenities" value="Parking" /><span
+                    ><i class="fas fa-parking"></i> Parking</span
+                  ></label
+                >
+                <label class="amenity-checkbox"
+                  ><input type="checkbox" name="amenities" value="Kitchen" /><span
+                    ><i class="fas fa-utensils"></i> Kitchen</span
+                  ></label
+                >
+                <label class="amenity-checkbox"
+                  ><input type="checkbox" name="amenities" value="AC" /><span
+                    ><i class="fas fa-snowflake"></i> Air Conditioning</span
+                  ></label
+                >
+                <label class="amenity-checkbox"
+                  ><input type="checkbox" name="amenities" value="TV" /><span
+                    ><i class="fas fa-tv"></i> TV</span
+                  ></label
+                >
+                <label class="amenity-checkbox"
+                  ><input type="checkbox" name="amenities" value="Laundry" /><span
+                    ><i class="fas fa-tshirt"></i> Laundry</span
+                  ></label
+                >
+                <label class="amenity-checkbox"
+                  ><input type="checkbox" name="amenities" value="Garden" /><span
+                    ><i class="fas fa-tree"></i> Garden</span
+                  ></label
+                >
+                <label class="amenity-checkbox"
+                  ><input
+                    type="checkbox"
+                    name="amenities"
+                    value="Swimming Pool"
+                  /><span><i class="fas fa-swimming-pool"></i> Swimming Pool</span></label
+                >
+                <label class="amenity-checkbox"
+                  ><input
+                    type="checkbox"
+                    name="amenities"
+                    value="Fireplace"
+                  /><span><i class="fas fa-fire"></i> Fireplace</span></label
+                >
+                <label class="amenity-checkbox"
+                  ><input type="checkbox" name="amenities" value="BBQ" /><span
+                    ><i class="fas fa-fire-alt"></i> BBQ Grill</span
+                  ></label
+                >
+              </div>
+            </div>
+
+            <!-- Images -->
+            <div class="form-section">
+              <h3 class="section-title">
+                <i class="fas fa-images"></i>
+                Property Images
+              </h3>
+              
+              <div class="form-group">
+                <label for="images">Upload Images (Max 5)</label>
+                <input
+                  type="file"
+                  id="images"
+                  name="images"
+                  accept="image/*"
+                  multiple
+                />
+                <p class="help-text">
+                  Upload clear, high-quality images of your homestay
+                </p>
+              </div>
+            </div>
+
+            <!-- Availability -->
+            <div class="form-section">
+              <h3 class="section-title">
+                <i class="fas fa-calendar-alt"></i>
+                Availability
+              </h3>
+              
+              <div class="availability-calendar">
+                <div class="form-group">
+                  <label for="availability" class="required">Current Status</label>
+                  <select id="availability" name="availability" required>
+                    <option value="Available">Available Now</option>
+                    <option value="Booked">Currently Booked</option>
+                    <option value="Seasonal">Seasonal Availability</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Available Date Range (Optional)</label>
+                  <div class="date-range form-row">
+                    <input
+                      type="date"
+                      name="availableFrom"
+                      placeholder="Available From"
+                    />
+                    <input
+                      type="date"
+                      name="availableTo"
+                      placeholder="Available To"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="submit-btn">
+              <i class="fas fa-home"></i> List My Homestay
+            </button>
+          </form>
+        </div>
+      </main>
+    </div>
+
+    <!-- User Box -->
+    <div class="user-box" id="user-box">
+      <i class="fas fa-user"></i> <span id="username">Guest</span>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const token = localStorage.getItem("token");
+        const userName = localStorage.getItem("userName");
+        const userBox = document.getElementById("username");
+        const hamburgerMenu = document.getElementById("hamburger-menu");
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("overlay");
+
+        // Hamburger menu functionality
+        hamburgerMenu.addEventListener('click', () => {
+          sidebar.classList.toggle('active');
+          overlay.classList.toggle('active');
+        });
+
+        overlay.addEventListener('click', () => {
+          sidebar.classList.remove('active');
+          overlay.classList.remove('active');
+        });
+
+        if (!token) {
+          localStorage.setItem("redirectAfterLogin", "add-homestay.html");
+          window.location.href = "login.html";
+        } else {
+          userBox.textContent = userName || "User";
+        }
+
+        document
+          .getElementById("logout-link")
+          .addEventListener("click", (e) => {
+            e.preventDefault();
+            localStorage.removeItem("token");
+            localStorage.removeItem("userName");
+            window.location.href = "login.html";
+          });
+
+        const form = document.getElementById("homestayForm");
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = new FormData(form);
+
+          // Collect amenities
+          const amenities = Array.from(
+            document.querySelectorAll("input[name='amenities']:checked")
+          ).map((cb) => cb.value);
+          formData.delete("amenities");
+          if (amenities.length > 0)
+            formData.append("amenities", amenities.join(","));
+
+          formData.set("gender", "Any");
+
+          try {
+            const res = await fetch(
+              "http://localhost:4000/api/properties/add-property",
+              {
+                method: "POST",
+                headers: { Authorization: `Bearer ${token}` },
+                body: formData,
+              }
+            );
+
+            const data = await res.json();
+            if (res.ok) {
+              alert("✅ Homestay added successfully!");
+              sessionStorage.removeItem("rentease_properties_cache");
+              window.location.href = "my-properties.html";
+            } else {
+              alert("❌ Failed: " + (data.message || "Something went wrong"));
+            }
+          } catch (err) {
+            console.error("Error:", err);
+            alert("⚠️ Server error. Try again later.");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
